@@ -148,6 +148,7 @@ run at all.
 | `src/headless` | The no-editor page the command line runner drives |
 | `server/` | Local API, run in-process by the Vite dev server |
 | `pipelines/` | Version-controlled workflows and prompt presets |
+| `.github/skills/` | Skill teaching Copilot CLI to author workflows and tools |
 | `docs/` | [Design notes](docs/design-notes.md) |
 
 This is a local development tool, not a hosted app. `npm run dev` starts a single
