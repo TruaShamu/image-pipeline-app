@@ -2,11 +2,16 @@
 
 A local-first visual node-graph editor for AI image pipelines, built on
 [tldraw](https://github.com/tldraw/tldraw). Place blocks on an infinite canvas,
-wire up typed ports, and run the graph to generate images — similar to ComfyUI,
-but React and tldraw, and every workflow is a YAML file you can review in a pull
-request.
+wire up typed ports, and run the graph to generate images.
 
-The same workflow runs on the canvas or from the command line.
+Three properties shape everything else:
+
+- **Workflows are plain YAML in git.** Not app state in a database — files you
+  diff, review in a pull request, and share the way you share source.
+- **The same graph runs on the canvas or headless from the CLI.** Not a second
+  code path that drifts: one engine, one tool registry, identical pixels.
+- **Generations are cached by content.** An unchanged rerun is free and returns
+  the same image, so a pipeline is reproducible instead of a slot machine.
 
 ## Quick start
 
@@ -29,9 +34,9 @@ call. Add a model by adding one entry to `MODELS`.
 
 ## Workflows
 
-The **Workflows** button opens the catalog, which lists every file in
-`pipelines/workflows/`. Opening one creates a named tldraw page and materializes
-it as canvas blocks. The canvas is the editor — there is no in-app YAML editor.
+Workflows and prompt presets live in `pipelines/` as plain YAML, committed to
+git and shared by the team. **The filename is the identity** — there is no `id:`
+field, so the name in git and the name in the app cannot drift apart.
 
 ```yaml
 version: 1
@@ -54,9 +59,9 @@ steps:
         from: generate.image
 ```
 
-Workflows and prompt presets live in `pipelines/` as plain YAML, committed to
-git and shared by the team. **The filename is the identity** — there is no `id:`
-field, so the name in git and the name in the app cannot drift apart.
+The **Workflows** button opens the catalog, which lists every file in
+`pipelines/workflows/`. Opening one creates a named tldraw page and materializes
+it as canvas blocks. The canvas is the editor — there is no in-app YAML editor.
 
 Built-in tools include `const.text`, `const.image`, `prompt.liquid`,
 `image.generate`, `image.removeBackground`, `image.adjust`, `image.blend`,
