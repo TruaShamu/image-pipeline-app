@@ -34,6 +34,8 @@ export interface RunGraphOptions {
 	signal?: AbortSignal
 	onNode?: (event: NodeEvent) => void
 	timeoutMs?: number
+	/** Bypass the generation cache, producing new images for unchanged parameters. */
+	refresh?: boolean
 }
 
 export interface RunGraphResult {
@@ -214,6 +216,7 @@ export async function runGraph(
 					log: (message) => console.debug(`[${step.id}] ${message}`),
 					onProgress: (done, total) =>
 						options.onNode?.({ id: step.id, status: 'running', progress: { done, total } }),
+					refresh: options.refresh,
 				})
 				const result: NodeResult = { status: 'succeeded', outputs }
 				results[step.id] = result

@@ -1,4 +1,4 @@
-import { resolveToolInputs, ToolRegistry, ToolValue } from '../tools'
+import { effectiveOutputType, resolveToolInputs, ToolRegistry, ToolValue } from '../tools'
 import { modelCatalog } from '../models/modelCatalog'
 import { GraphBinding, GraphStep, WorkflowGraph } from './graphTypes'
 
@@ -63,14 +63,13 @@ function getFanOutSteps(
 	const settled = new Set<string>()
 	const visiting = new Set<string>()
 
-	const effectiveOutputType = (stepId: string, outputName: string): string | null => {
+	const outputTypeOf = (stepId: string, outputName: string): string | null => {
 		const step = stepMap.get(stepId)
 		if (!step || !registry.has(step.tool)) return null
-		const output = registry
-			.resolve(step.tool)
-			.outputs.find((candidate) => candidate.name === outputName)
+		const tool = registry.resolve(step.tool)
+		const output = tool.outputs.find((candidate) => candidate.name === outputName)
 		if (!output) return null
-		return output.type === 'image' && fansOut(stepId) ? 'image[]' : output.type
+		return effectiveOutputType(tool, output, step.with, fansOut(stepId))
 	}
 
 	function fansOut(stepId: string): boolean {
@@ -86,7 +85,7 @@ function getFanOutSteps(
 			for (const binding of step.needs ?? []) {
 				const input = inputs.find((candidate) => candidate.name === binding.port)
 				if (!input || input.type !== 'image') continue
-				if (effectiveOutputType(binding.from.stepId, binding.from.output) === 'image[]') {
+				if (outputTypeOf(binding.from.stepId, binding.from.output) === 'image[]') {
 					result = true
 					break
 				}
@@ -138,8 +137,12 @@ function validateBinding(
 		})
 		return
 	}
-	const sourceType =
-		output.type === 'image' && fanOutSteps.has(binding.from.stepId) ? 'image[]' : output.type
+	const sourceType = effectiveOutputType(
+		registry.resolve(sourceStep.tool),
+		output,
+		sourceStep.with,
+		fanOutSteps.has(binding.from.stepId)
+	)
 	// An `image[]` landing on a scalar `image` input is not an error: the runner maps the tool
 	// over the elements.
 	const mappable = sourceType === 'image[]' && input.type === 'image'

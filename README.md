@@ -178,8 +178,31 @@ block running sixteen times is indistinguishable from a block that has hung.
 
 Connecting a collection to a scalar input is therefore allowed, and is what starts a fan-out.
 **The permission is one-way.** A scalar cannot feed a collection input, because a tool declaring
-one reads it with `Array.isArray` and a lone value would throw at run time. Gathering several
-images into one collection needs a real gather step, which does not exist yet.
+one reads it with `Array.isArray` and a lone value would throw at run time.
+
+A block that maps also *passes the collection on*: `generate ×4 → adjust → gif` works, because
+`adjust` runs four times and its `image` output carries all four. A block cannot tell that from
+its own configuration — it depends on what is plugged in upstream — so `nodeFansOut` walks the
+connections to decide, and the output port is drawn square as a result. It is the same rule
+`getFanOutSteps` applies to a parsed workflow, so a graph cannot be drawn one way and validated
+another.
+
+Gathering is the inverse, and is what **Collect Frames** (`frames.collect`) does: it takes
+several images and emits one `image[]`, so `sketch ×3 → frames.collect → frames.gif` builds an
+animation from separately produced images.
+
+Its slots are numbered — `item1`, `item2`, … — grown by a `count` field, rather than being one
+port that accepts many connections. A collection's order is the frame order of an animation, so
+it is load-bearing; numbered slots make that order visible on the canvas and stable in the file,
+whereas the order connections happened to be drawn in would be neither.
+
+Every slot is required, so a gap is reported as `Required input "item2" is missing` rather than
+quietly yielding a shorter animation. That check is the ordinary one `validateGraph` applies to
+any required input, not special pleading for this tool.
+
+A collection can also arrive without being gathered: `image.generate` with a `count` above one
+emits an `image[]`. Its output port becomes square as soon as you change the count, before any
+call is made, so `generate ×4 → frames.gif` can be drawn like any other connection.
 
 ### Sketching
 
@@ -235,6 +258,16 @@ that combination before calling the API rather than quietly returning an opaque 
 The size options are the set every deployment accepts. `gpt-image-1.5` takes a fixed list, while
 `gpt-image-2` and `gpt-image-2.5-*` accept any size whose width and height are both divisible by
 16; the block offers the overlap so a saved workflow keeps working if you switch models.
+
+`count` asks the model for several images in one call, up to ten. That is not the same as running
+the block twice: one call gives genuine variations of the same prompt, and costs one round trip.
+Above one the block emits an `image[]` rather than a single image — see **Collections** — so the
+whole set flows onward instead of the first being kept and the rest discarded, which is what this
+did before.
+
+The shape of the value follows the configured count, not the number of images that came back. The
+port type is drawn on the canvas before the call is made, so the value has to match what was
+promised even if the model returns fewer.
 
 ### When a run fails
 
@@ -344,21 +377,65 @@ That cache is gitignored and disposable — deleting it only forces regeneration
 Everything meant to be shared is plain YAML under `pipelines/`, so workflows and
 prompts are reviewed in pull requests and versioned like any other source file.
 
+### Generated images are cached
+
+Generation is the slow, costly step, so results are cached by their parameters —
+prompt, model, size, quality, format and reference image. Rerunning an unchanged
+pipeline reuses them and costs nothing, the same way a build cache works. A
+cached run is reproducible: the same workflow produces byte-identical output.
+
+Because generation has no seed, that also means an unchanged rerun returns the
+**same** image rather than a new sample. Asking for a new one is deliberate:
+
+- On the canvas, use **Regenerate** in a generate block's footer menu. "Play from
+  here" reuses the cache on purpose.
+- From the command line, pass `--fresh`.
+
+Either way the new image replaces the cached one, so later runs are consistent
+with what you last saw. The cache lives in `.cache/images/` and is disposable.
+
+## Running a workflow from the command line
+
+A workflow runs the same way with or without the editor:
+
+```
+npm run workflow -- collected-animation
+npm run workflow -- pipelines/workflows/prompt-variations.yaml --out ./out
+```
+
+It prints each step as it finishes, saves anything a Download block produces
+into `workflow-output/` (override with `--out`), and exits non-zero when a step
+fails — so it works in a script or in CI. Other options are `--to <step>` to
+stop at one step, `--fresh` to bypass the generation cache, and `--timeout <ms>`
+for a per-step limit. It reuses a dev server if one is already running, and
+otherwise starts one.
+
+### Why it still uses a browser
+
+The engine itself has no DOM dependency, but several image tools are written
+against browser primitives (`createImageBitmap`, a 2D canvas). So rather than
+keep a second image implementation for Node, the runner loads `headless.html` —
+a page with no editor and no UI — in headless Chromium and calls the same
+`runGraph` with the same tool registry. One implementation, one set of pixels: a
+GIF built from the command line is byte-for-byte the GIF built on the canvas.
+
+### Steps that need the canvas
+
+A Sketch block reads what you drew inside it, so it cannot run without the
+editor by definition. The runner refuses such a workflow **before** executing
+anything and names the step:
+
+```
+This workflow cannot run headlessly because it draws on the canvas: "drawing" (Sketch).
+```
+
+Tools declare this with `canvasRegion` on their manifest, so a new canvas-reading
+tool is covered the day it is written rather than needing to be added to a list.
+
 ## Third-party notices
 
-This project is **not affiliated with or endorsed by tldraw**. It is an
-independent application that builds on the tldraw SDK as a dependency.
-
-The bundled tldraw SDK is licensed separately by tldraw Inc. under the
-[tldraw SDK license](https://github.com/tldraw/tldraw/blob/main/LICENSE.md),
-which governs its use regardless of the terms of this repository. Notably, the
-default license permits use in development environments but **not in production
-environments**, and requires that the on-canvas watermark and license notices be
-preserved. Read the license before deploying or redistributing this project.
-
-"tldraw" and the tldraw logo are trademarks of tldraw Inc.; see their
-[trademark guidelines](https://github.com/tldraw/tldraw/blob/main/TRADEMARKS.md).
-Copyright for the tldraw SDK is held by tldraw Inc.
-
-Bug reports about the SDK itself belong on
-[tldraw's issue tracker](https://github.com/tldraw/tldraw/issues), not here.
+Not affiliated with or endorsed by tldraw. The
+[tldraw SDK](https://github.com/tldraw/tldraw/blob/main/LICENSE.md) is a
+dependency licensed separately by tldraw Inc. — its default license covers
+development but not production use, and requires keeping the on-canvas
+watermark. Read it before deploying.

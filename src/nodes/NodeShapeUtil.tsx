@@ -289,6 +289,9 @@ function NodeFooterMenu({ shape }: { shape: NodeShape }) {
 	)?.value as string | undefined
 
 	const node = shape.props.node as Record<string, unknown>
+	// Only generation is cached, so only generation has anything to resample. "Play from here"
+	// deliberately reuses cached images; this is the way to ask for new ones.
+	const canGenerate = node.toolId === 'image.generate'
 	const definition = getNodeDefinition(editor, shape.props.node)
 	const resultKeys = definition.resultKeys
 	const defaults = definition.getDefault() as Record<string, unknown>
@@ -327,6 +330,10 @@ function NodeFooterMenu({ shape }: { shape: NodeShape }) {
 		await navigator.clipboard.writeText(textResult)
 	}, [textResult])
 
+	const handleRegenerate = useCallback(() => {
+		startExecution(editor, new Set([shape.id]), { refresh: true })
+	}, [editor, shape.id])
+
 	const handleClearResult = useCallback(() => {
 		if (!resultKeys || resultKeys.length === 0) return
 		const updates: Record<string, unknown> = {}
@@ -363,6 +370,13 @@ function NodeFooterMenu({ shape }: { shape: NodeShape }) {
 								<TldrawUiButtonLabel>Duplicate</TldrawUiButtonLabel>
 							</TldrawUiButton>
 						</TldrawUiDropdownMenuItem>
+						{canGenerate && (
+							<TldrawUiDropdownMenuItem>
+								<TldrawUiButton type="menu" onClick={handleRegenerate}>
+									<TldrawUiButtonLabel>Regenerate</TldrawUiButtonLabel>
+								</TldrawUiButton>
+							</TldrawUiDropdownMenuItem>
+						)}
 						{imageUrl && (
 							<TldrawUiDropdownMenuItem>
 								<TldrawUiButton type="menu" onClick={handleDownloadImage}>

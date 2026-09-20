@@ -189,10 +189,14 @@ async function getRetainedResults(
 				.resolve(sourceStep.tool)
 				.outputs.find((candidate) => candidate.name === binding.from.output)
 			if (!output) continue
+			// A retained `image` output can hold a set — the step fanned out, or it was asked for
+			// several images — so the stored value decides how to read it, not the declared type.
+			const outputType =
+				output.type === 'image' && Array.isArray(info.value) ? 'image[]' : output.type
 			const result = retained[sourceStep.id] ?? { status: 'succeeded', outputs: {} }
 			result.outputs![binding.from.output] = await canvasValueToToolValue(
 				info.value as PipelineValue,
-				output.type
+				outputType
 			)
 			retained[sourceStep.id] = result
 		}
@@ -211,7 +215,8 @@ export class CanvasExecution {
 
 	constructor(
 		private readonly editor: Editor,
-		private readonly startingNodeIds: ReadonlySet<TLShapeId>
+		private readonly startingNodeIds: ReadonlySet<TLShapeId>,
+		private readonly refresh = false
 	) {}
 
 	stop() {
@@ -251,6 +256,7 @@ export class CanvasExecution {
 			executionStepIds: executionIds,
 			initialResults,
 			signal: this.controller.signal,
+			refresh: this.refresh,
 			onNode: (event) => {
 				const shape = projection.shapeByStepId.get(event.id)
 				if (!shape) return

@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<title>Workflow runner</title>
+	</head>
+	<body>
+		<!--
+			The headless runner's page. No editor and no UI: the browser is here for its image
+			primitives, so that a run from the command line produces the same bytes as a run on the
+			canvas.
+		-->
+		<main id="status">Ready. Call window.runWorkflow(yaml).</main>
+		<script type="module" src="/src/headless/main.ts"></script>
+	</body>
+</html>

@@ -1,0 +1,53 @@
+name: Prompt variations
+description: Ask for four variations of one prompt in a single call, flip through them, and flatten them into a GIF.
+tags: [collection, generate, gif]
+version: 1
+steps:
+  - id: subject
+    tool: const.text
+    with:
+      value: a red apple
+    ui: { x: 80, y: 120 }
+  - id: prompt
+    tool: prompt.liquid
+    with:
+      template: "{{subject}}, flat vector icon, bold outline, centred on a plain white background"
+    needs:
+      - port: subject
+        from: subject.text
+    ui: { x: 340, y: 120 }
+  # count above one makes the `image` output a collection, so its port is square and every
+  # connection leaving it is drawn as rails. One call, four genuine variations.
+  - id: variations
+    tool: image.generate
+    with:
+      model: openai:gpt-image-1.5
+      size: 1024x1024
+      count: 4
+    needs:
+      - port: prompt
+        from: prompt.text
+    ui: { x: 600, y: 120 }
+  - id: flip-through
+    tool: frames.preview
+    needs:
+      - port: frames
+        from: variations.image
+    ui: { x: 900, y: 60 }
+  - id: reel
+    tool: frames.gif
+    with:
+      fps: 2
+      loop: forever
+    needs:
+      - port: frames
+        from: variations.image
+    ui: { x: 900, y: 320 }
+  - id: save-reel
+    tool: image.download
+    with:
+      filename: variations.gif
+    needs:
+      - port: image
+        from: reel.gif
+    ui: { x: 1180, y: 320 }

@@ -191,8 +191,14 @@ export const imageGenerateTool: Tool = {
 				{ value: 'jpeg', label: 'JPEG' },
 			],
 		},
+		// Asking the model for several images at once costs one call and gives genuine variations
+		// of the same prompt, which is not what running the block twice gives.
+		{ name: 'count', type: 'int', required: false, default: 1, port: false },
 	],
 	outputs: [{ name: 'image', type: 'image' }],
+	// Above one, the block emits the whole set rather than a single image, so it can feed
+	// `frames.gif` directly or fan out over whatever comes next.
+	collectionOutputs: (config) => (generateCount(config) > 1 ? ['image'] : []),
 	async run(inputs, context) {
 		const reference = inputs.reference
 		const format = asString(inputs.format ?? 'png', 'format')
@@ -202,6 +208,7 @@ export const imageGenerateTool: Tool = {
 		if (background === 'transparent' && format !== 'png') {
 			throw new Error('A transparent background needs the PNG format.')
 		}
+		const count = generateCount(inputs)
 		const response = await fetch('/api/generate', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
@@ -213,6 +220,10 @@ export const imageGenerateTool: Tool = {
 				...optionalSetting('quality', inputs.quality),
 				...optionalSetting('background', inputs.background),
 				outputFormat: format,
+				n: count,
+				// Only a deliberate regenerate asks for new samples; an ordinary rerun reuses the
+				// cached images so an unchanged pipeline costs nothing.
+				...(context.refresh ? { refresh: true } : {}),
 				// A connected image turns this into an image-to-image edit.
 				...(reference == null
 					? {}
@@ -220,15 +231,33 @@ export const imageGenerateTool: Tool = {
 			}),
 			signal: context.signal,
 		})
-		const body = (await response.json()) as { imageUrl?: string; error?: string }
-		if (!response.ok || !body.imageUrl) {
+		const body = (await response.json()) as { imageUrls?: string[]; error?: string }
+		if (!response.ok || !body.imageUrls?.length) {
 			throw new ToolHttpError(
 				body.error ?? `Image generation failed (${response.status})`,
 				response.status
 			)
 		}
-		return { image: await fetchImage(body.imageUrl) }
+		const images = await Promise.all(body.imageUrls.map((url) => fetchImage(url)))
+		// The shape follows the configured count, not the number that came back, so that the
+		// value always matches the port type the canvas already drew.
+		return { image: count > 1 ? images : images[0] }
 	},
+}
+
+export const GENERATE_MAX_COUNT = 10
+
+/**
+ * How many images this block is configured to produce.
+ *
+ * Clamped rather than rejected because `collectionOutputs` calls this during rendering, where
+ * throwing on a half-typed number would break the canvas.
+ */
+function generateCount(config: Record<string, ToolValue>): number {
+	const raw = config.count
+	const value = typeof raw === 'number' ? Math.trunc(raw) : 1
+	if (!Number.isFinite(value)) return 1
+	return Math.min(GENERATE_MAX_COUNT, Math.max(1, value))
 }
 
 /** Include a generation setting only when it names a real choice rather than "auto". */
@@ -812,6 +841,71 @@ export const canvasSketchTool: Tool = {
 	},
 }
 
+/**
+ * The number of slots a Collect block offers, clamped to something a block can draw.
+ *
+ * `dynamicInputs` is called during rendering and port layout, so it must never throw or return a
+ * runaway list for a hand-edited `count`. The run itself reports a bad value properly.
+ */
+const COLLECT_MIN_SLOTS = 2
+const COLLECT_MAX_SLOTS = 16
+
+function collectSlotCount(value: ToolValue | undefined): number {
+	const parsed = typeof value === 'number' ? value : Number(value)
+	if (!Number.isFinite(parsed)) return COLLECT_MIN_SLOTS
+	return Math.min(COLLECT_MAX_SLOTS, Math.max(COLLECT_MIN_SLOTS, Math.floor(parsed)))
+}
+
+function collectSlotName(index: number): string {
+	return `item${index}`
+}
+
+/**
+ * Gather separate images into one collection.
+ *
+ * The inverse of a fan-out. Slots are numbered rather than fed through a single multi-connection
+ * port, because the order of a collection is load-bearing — it is the frame order of an
+ * animation — and numbered slots make that order visible on the canvas and stable in the file.
+ * Connection order would be neither.
+ */
+export const framesCollectTool: Tool = {
+	id: 'frames.collect',
+	title: 'Collect Frames',
+	description: 'Gather separate images into one collection, in slot order.',
+	category: 'process',
+	icon: 'process',
+	inputs: [
+		{ name: 'count', type: 'int', required: false, port: false, default: COLLECT_MIN_SLOTS },
+	],
+	// Every slot is required, so an unfilled one is reported by graph validation as a missing
+	// input rather than silently dropped from the middle of an animation.
+	dynamicInputs: (config) =>
+		Array.from({ length: collectSlotCount(config.count) }, (_, index) => ({
+			name: collectSlotName(index + 1),
+			type: 'image' as const,
+			required: true,
+			port: true,
+		})),
+	outputs: [{ name: 'frames', type: 'image[]' }],
+	async run(inputs) {
+		const requested = asNumber(inputs.count, 'count', COLLECT_MIN_SLOTS)
+		if (
+			!Number.isInteger(requested) ||
+			requested < COLLECT_MIN_SLOTS ||
+			requested > COLLECT_MAX_SLOTS
+		) {
+			throw new Error(
+				`count must be a whole number between ${COLLECT_MIN_SLOTS} and ${COLLECT_MAX_SLOTS}`
+			)
+		}
+		const frames = Array.from({ length: requested }, (_, index) => {
+			const name = collectSlotName(index + 1)
+			return asImage(inputs[name], name)
+		})
+		return { frames }
+	},
+}
+
 export const builtinTools: readonly Tool[] = [
 	constTextTool,
 	constImageTool,
@@ -823,6 +917,7 @@ export const builtinTools: readonly Tool[] = [
 	imageBlendTool,
 	imageUpscaleTool,
 	spriteSliceTool,
+	framesCollectTool,
 	framesGifTool,
 	imagePreviewTool,
 	framesPreviewTool,

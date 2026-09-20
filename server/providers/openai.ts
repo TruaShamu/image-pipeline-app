@@ -42,7 +42,7 @@ export const openai: ImageProvider = {
 			headers: { 'Content-Type': 'application/json', ...authHeaders },
 			body: JSON.stringify({
 				prompt: params.prompt,
-				n: 1,
+				n: imageCount(params),
 				...imageOptions(params),
 			}),
 		})
@@ -52,8 +52,14 @@ export const openai: ImageProvider = {
 		}
 
 		const data = (await res.json()) as AzureImageResponse
-		return { imageUrl: extractImageUrl(data) }
+		return { imageUrls: extractImageUrls(data) }
 	},
+}
+
+/** How many images to request, within the range Azure accepts. */
+function imageCount(params: GenerateParams): number {
+	const requested = Math.trunc(params.n ?? 1)
+	return Math.min(10, Math.max(1, Number.isFinite(requested) ? requested : 1))
 }
 
 /**
@@ -91,7 +97,7 @@ async function editImage(
 	const form = new FormData()
 	form.append('image', blob, 'image.png')
 	form.append('prompt', params.prompt)
-	form.append('n', '1')
+	form.append('n', String(imageCount(params)))
 	// The edits endpoint takes the same settings, as multipart fields rather than JSON.
 	for (const [key, value] of Object.entries(imageOptions(params))) {
 		form.append(key, String(value))
@@ -110,7 +116,7 @@ async function editImage(
 	}
 
 	const data = (await res.json()) as AzureImageResponse
-	return { imageUrl: extractImageUrl(data) }
+	return { imageUrls: extractImageUrls(data) }
 }
 
 interface AzureImageResponse {
@@ -147,11 +153,15 @@ function azureErrorMessage(body: string): string {
 }
 
 /** GPT Image returns base64; fall back to a URL if a deployment returns one. */
-function extractImageUrl(data: AzureImageResponse): string {
-	const first = data.data?.[0]
-	if (first?.b64_json) return `data:image/png;base64,${first.b64_json}`
-	if (first?.url) return first.url
-	throw new Error('Azure OpenAI returned no image data')
+function extractImageUrls(data: AzureImageResponse): string[] {
+	const urls = (data.data ?? [])
+		.map((image) => {
+			if (image.b64_json) return `data:image/png;base64,${image.b64_json}`
+			return image.url ?? null
+		})
+		.filter((url): url is string => url !== null)
+	if (urls.length === 0) throw new Error('Azure OpenAI returned no image data')
+	return urls
 }
 
 function requireEndpoint(env: Env): string {

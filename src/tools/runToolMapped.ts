@@ -45,7 +45,17 @@ export async function runToolMapped(
 		}
 		const outputs = await tool.run(element, context)
 		for (const output of tool.outputs) {
-			;(collected[output.name] as ToolValue[]).push(outputs[output.name] ?? null)
+			const value = outputs[output.name] ?? null
+			// A tool that itself returns a set — `image.generate` asked for several images — would
+			// otherwise nest one array inside another, and there is no nested collection type to
+			// carry that. Flattening keeps the result something the rest of the graph can read.
+			// Only image outputs flatten: a `json` output is allowed to be an array in its own right.
+			const isImageOutput = output.type === 'image' || output.type === 'image[]'
+			if (isImageOutput && Array.isArray(value)) {
+				;(collected[output.name] as ToolValue[]).push(...value)
+			} else {
+				;(collected[output.name] as ToolValue[]).push(value)
+			}
 		}
 		context.log(`mapped ${index + 1}/${count}`)
 		context.onProgress?.(index + 1, count)

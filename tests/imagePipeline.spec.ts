@@ -734,3 +734,626 @@ test.describe('sketch', () => {
 		await expect(page.locator('.NodeImagePreview')).toHaveCount(0)
 	})
 })
+
+test.describe('collect', () => {
+	/** A solid PNG of the given width, as YAML-embeddable bytes. Width identifies the frame. */
+	const makeSquareScript = (width: number) => `
+		(async () => {
+			const canvas = document.createElement('canvas')
+			canvas.width = ${width}
+			canvas.height = 16
+			const ctx = canvas.getContext('2d')
+			ctx.fillStyle = '#3366cc'
+			ctx.fillRect(0, 0, ${width}, 16)
+			const blob = await new Promise((r) => canvas.toBlob((b) => r(b), 'image/png'))
+			return [...new Uint8Array(await blob.arrayBuffer())]
+		})()
+	`
+
+	/**
+	 * A collection's order is the frame order of an animation, so it must come from the numbered
+	 * slots rather than from the order the connections happen to be listed in.
+	 */
+	test('orders frames by slot, not by binding order', async ({ page }) => {
+		await gotoApp(page)
+		const small = (await page.evaluate(makeSquareScript(16))) as number[]
+		const medium = (await page.evaluate(makeSquareScript(24))) as number[]
+		const large = (await page.evaluate(makeSquareScript(32))) as number[]
+
+		const widths = await page.evaluate(
+			async ({ small, medium, large }) => {
+				const source = (id: string, bytes: number[]) => [
+					`  - id: ${id}`,
+					'    tool: const.image',
+					'    with:',
+					'      value:',
+					`        bytes: [${bytes.join(',')}]`,
+					'        mimeType: image/png',
+				]
+				const yaml = [
+					'version: 1',
+					'steps:',
+					...source('a', small),
+					...source('b', medium),
+					...source('c', large),
+					'  - id: collect',
+					'    tool: frames.collect',
+					'    with: { count: 3 }',
+					'    needs:',
+					// Deliberately listed last slot first.
+					'      - port: item3',
+					'        from: c.image',
+					'      - port: item2',
+					'        from: b.image',
+					'      - port: item1',
+					'        from: a.image',
+				].join('\n')
+				const w = window as any
+				w.workflow.open(yaml, 'collect order')
+				await new Promise((r) => setTimeout(r, 600))
+				const editor = w.editor
+				const shapes = editor.getCurrentPageShapes().filter((s: any) => s.type === 'node')
+				await w.startExecution(editor, new Set(shapes.map((s: any) => s.id)))
+				await new Promise((r) => setTimeout(r, 3000))
+
+				const collect = editor
+					.getCurrentPageShapes()
+					.find((s: any) => s.type === 'node' && s.props.node?.toolId === 'frames.collect')
+				const frames = collect?.props?.node?.lastOutputs?.frames ?? []
+				return Promise.all(
+					frames.map(
+						(frame: string) =>
+							new Promise<number>((resolve) => {
+								const image = new Image()
+								image.onload = () => resolve(image.width)
+								image.src = frame
+							})
+					)
+				)
+			},
+			{ small, medium, large }
+		)
+
+		expect(widths).toEqual([16, 24, 32])
+	})
+
+	/**
+	 * A gap in the middle of an animation is a mistake, not a shorter animation, so an unfilled
+	 * slot is reported rather than quietly skipped.
+	 */
+	test('an unfilled slot is reported', async ({ page }) => {
+		await gotoApp(page)
+		const small = (await page.evaluate(makeSquareScript(16))) as number[]
+
+		await page.evaluate(async (bytes) => {
+			const yaml = [
+				'version: 1',
+				'steps:',
+				'  - id: a',
+				'    tool: const.image',
+				'    with:',
+				'      value:',
+				`        bytes: [${bytes.join(',')}]`,
+				'        mimeType: image/png',
+				'  - id: collect',
+				'    tool: frames.collect',
+				'    with: { count: 3 }',
+				'    needs:',
+				'      - port: item1',
+				'        from: a.image',
+			].join('\n')
+			const w = window as any
+			w.workflow.open(yaml, 'collect gap')
+			await new Promise((r) => setTimeout(r, 600))
+			const editor = w.editor
+			await w.startExecution(
+				editor,
+				new Set(editor.getCurrentPageShapes().filter((s: any) => s.type === 'node').map((s: any) => s.id))
+			)
+			await new Promise((r) => setTimeout(r, 1500))
+		}, small)
+
+		await expect(page.locator('.ExecutionErrorReport')).toContainText('item2')
+	})
+
+	test('slots appear and disappear with the count', async ({ page }) => {
+		await gotoApp(page)
+		await page.evaluate(async () => {
+			const w = window as any
+			w.workflow.open(
+				[
+					'version: 1',
+					'steps:',
+					'  - id: collect',
+					'    tool: frames.collect',
+					'    with: { count: 4 }',
+					'    ui: { x: 100, y: 100 }',
+				].join('\n'),
+				'collect slots'
+			)
+			await new Promise((r) => setTimeout(r, 600))
+		})
+
+		const block = page.locator('.NodeShape', { hasText: 'Collect Frames' })
+		await expect(block.locator('.NodeRow', { hasText: /^item/ })).toHaveCount(4)
+
+		await page.evaluate(async () => {
+			const w = window as any
+			const editor = w.editor
+			const shape = editor
+				.getCurrentPageShapes()
+				.find((s: any) => s.type === 'node' && s.props.node?.toolId === 'frames.collect')
+			editor.updateShape({
+				id: shape.id,
+				type: 'node',
+				props: { node: { ...shape.props.node, config: { ...shape.props.node.config, count: 2 } } },
+			})
+			await new Promise((r) => setTimeout(r, 400))
+		})
+
+		await expect(block.locator('.NodeRow', { hasText: /^item/ })).toHaveCount(2)
+	})
+})
+
+test.describe('generating several images', () => {
+	/** A solid PNG data URL of the given width. The width identifies which image came back. */
+	const makeDataUrlScript = (width: number) => `
+		(async () => {
+			const canvas = document.createElement('canvas')
+			canvas.width = ${width}
+			canvas.height = 16
+			const ctx = canvas.getContext('2d')
+			ctx.fillStyle = '#cc6633'
+			ctx.fillRect(0, 0, ${width}, 16)
+			return canvas.toDataURL('image/png')
+		})()
+	`
+
+	/**
+	 * Stand in for Azure, so what this asserts is how the block reads a multi-image reply rather
+	 * than whether a token happens to be valid today.
+	 */
+	async function stubGenerate(page: Page, imageUrls: string[]) {
+		await page.route('**/api/generate', async (route) => {
+			await route.fulfill({
+				status: 200,
+				contentType: 'application/json',
+				body: JSON.stringify({ imageUrls }),
+			})
+		})
+	}
+
+	async function runGenerate(page: Page, count: number) {
+		return page.evaluate(async (count) => {
+			const w = window as any
+			w.workflow.open(
+				[
+					'version: 1',
+					'steps:',
+					'  - id: gen',
+					'    tool: image.generate',
+					`    with: { prompt: a cat, count: ${count} }`,
+					'    ui: { x: 100, y: 100 }',
+				].join('\n'),
+				'generate count'
+			)
+			await new Promise((r) => setTimeout(r, 600))
+			const editor = w.editor
+			const shapes = editor.getCurrentPageShapes().filter((s: any) => s.type === 'node')
+			await w.startExecution(editor, new Set(shapes.map((s: any) => s.id)))
+			await new Promise((r) => setTimeout(r, 2000))
+			return editor
+				.getCurrentPageShapes()
+				.find((s: any) => s.type === 'node' && s.props.node?.toolId === 'image.generate')
+				?.props?.node?.lastOutputs?.image ?? null
+		}, count)
+	}
+
+	/**
+	 * The provider used to return `data[0]` and drop the rest. Asking for three has to yield three,
+	 * in the order the model returned them.
+	 */
+	test('every returned image is kept, in order', async ({ page }) => {
+		await gotoApp(page)
+		const urls = [
+			(await page.evaluate(makeDataUrlScript(16))) as string,
+			(await page.evaluate(makeDataUrlScript(24))) as string,
+			(await page.evaluate(makeDataUrlScript(32))) as string,
+		]
+		await stubGenerate(page, urls)
+
+		const output = await runGenerate(page, 3)
+		expect(Array.isArray(output)).toBe(true)
+		const widths = await page.evaluate(
+			(frames: string[]) =>
+				Promise.all(
+					frames.map(
+						(frame) =>
+							new Promise<number>((resolve) => {
+								const image = new Image()
+								image.onload = () => resolve(image.width)
+								image.src = frame
+							})
+					)
+				),
+			output as string[]
+		)
+		expect(widths).toEqual([16, 24, 32])
+	})
+
+	/**
+	 * The shape of the value follows the configured count, not the reply, so that it always
+	 * matches the port type the canvas drew before the call was made.
+	 */
+	test('a single image is not wrapped in a collection', async ({ page }) => {
+		await gotoApp(page)
+		const url = (await page.evaluate(makeDataUrlScript(16))) as string
+		await stubGenerate(page, [url])
+
+		const output = await runGenerate(page, 1)
+		expect(Array.isArray(output)).toBe(false)
+		expect(typeof output).toBe('string')
+	})
+
+	/**
+	 * The payoff: several images are a collection, so the block can feed `frames.gif` directly.
+	 * At a count of one it is a single image, and that connection must still be refused.
+	 */
+	test('the output port becomes a collection above a count of one', async ({ page }) => {
+		await gotoApp(page)
+
+		const connect = async (count: number) => {
+			await page.evaluate(async (count) => {
+				const w = window as any
+				w.workflow.open(
+					[
+						'version: 1',
+						'steps:',
+						'  - id: gen',
+						'    tool: image.generate',
+						`    with: { prompt: a cat, count: ${count} }`,
+						'    ui: { x: 100, y: 100 }',
+						'  - id: gif',
+						'    tool: frames.gif',
+						'    ui: { x: 700, y: 100 }',
+					].join('\n'),
+					`generate to gif ${count}`
+				)
+				await new Promise((r) => setTimeout(r, 600))
+			}, count)
+
+			const from = await page
+				.locator('.NodeShape', { hasText: 'Generate Image' })
+				.locator('.NodeRow', { hasText: /^image/ })
+				.locator('.Port_start')
+				.boundingBox()
+			const to = await page
+				.locator('.NodeShape', { hasText: 'Compose GIF' })
+				.locator('.NodeRow', { hasText: /^frames/ })
+				.locator('.Port_end')
+				.boundingBox()
+			expect(from).not.toBeNull()
+			expect(to).not.toBeNull()
+			await page.mouse.move(from!.x + from!.width / 2, from!.y + from!.height / 2)
+			await page.mouse.down()
+			await page.mouse.move(to!.x + to!.width / 2, to!.y + to!.height / 2, { steps: 12 })
+			await page.mouse.up()
+			await page.waitForTimeout(400)
+			return page.evaluate(() => (window as any).workflow.exportYaml() as string)
+		}
+
+		expect(await connect(3)).toContain('port: frames')
+		expect(await connect(1)).not.toContain('port: frames')
+	})
+})
+
+/**
+ * The catalog examples are the first thing anyone runs, so a renamed tool or port must not be
+ * discovered by clicking Run and getting an error. Loading a workflow drops bindings it cannot
+ * resolve silently, so the count of drawn connections is what proves the file still fits the
+ * tools.
+ */
+test.describe('catalog examples', () => {
+	const examples = [
+		{ id: 'prompt-variations', nodes: 6, connections: 5 },
+		{ id: 'collected-animation', nodes: 9, connections: 8 },
+	]
+
+	for (const example of examples) {
+		test(`${example.id} loads with every connection intact`, async ({ page }) => {
+			await gotoApp(page)
+			const result = await page.evaluate(async (id) => {
+				const response = await fetch('/api/pipelines/workflows')
+				const list = (await response.json()) as { files: Array<{ id: string; yaml: string }> }
+				const file = list.files.find((candidate) => candidate.id === id)
+				if (!file) return null
+				const w = window as any
+				w.workflow.open(file.yaml, id)
+				await new Promise((r) => setTimeout(r, 900))
+				const shapes = w.editor.getCurrentPageShapes()
+				return {
+					nodes: shapes.filter((s: any) => s.type === 'node').length,
+					connections: shapes.filter((s: any) => s.type === 'connection').length,
+				}
+			}, example.id)
+
+			expect(result, `${example.id} is missing from the catalog`).not.toBeNull()
+			expect(result!.nodes).toBe(example.nodes)
+			expect(result!.connections).toBe(example.connections)
+		})
+	}
+})
+
+/**
+ * A block cannot tell from its own configuration whether it maps over a collection — that depends
+ * on what is plugged into it. Before this, a fanning-out block drew a scalar output port, so its
+ * result could not be wired onwards into anything collection-shaped even though the same graph
+ * validated when written by hand.
+ */
+test.describe('fan-out ports', () => {
+	const openChain = (page: Page, count: number) =>
+		page.evaluate(async (count) => {
+			const w = window as any
+			w.workflow.open(
+				[
+					'version: 1',
+					'steps:',
+					'  - id: gen',
+					'    tool: image.generate',
+					`    with: { prompt: a cat, count: ${count} }`,
+					'    ui: { x: 60, y: 80 }',
+					'  - id: adjust',
+					'    tool: image.adjust',
+					'    needs:',
+					'      - port: source',
+					'        from: gen.image',
+					'    ui: { x: 500, y: 80 }',
+					'  - id: gif',
+					'    tool: frames.gif',
+					'    ui: { x: 950, y: 80 }',
+				].join('\n'),
+				`fan-out ports ${count}`
+			)
+			await new Promise((r) => setTimeout(r, 800))
+		}, count)
+
+	const dragAdjustToGif = async (page: Page) => {
+		const from = await page
+			.locator('.NodeShape', { hasText: 'Adjust Image' })
+			.locator('.NodeRow', { hasText: /^image/ })
+			.locator('.Port_start')
+			.boundingBox()
+		const to = await page
+			.locator('.NodeShape', { hasText: 'Compose GIF' })
+			.locator('.NodeRow', { hasText: /^frames/ })
+			.locator('.Port_end')
+			.boundingBox()
+		expect(from).not.toBeNull()
+		expect(to).not.toBeNull()
+		await page.mouse.move(from!.x + from!.width / 2, from!.y + from!.height / 2)
+		await page.mouse.down()
+		await page.mouse.move(to!.x + to!.width / 2, to!.y + to!.height / 2, { steps: 12 })
+		await page.mouse.up()
+		await page.waitForTimeout(400)
+		return page.evaluate(() => (window as any).workflow.exportYaml() as string)
+	}
+
+	test('a mapped block can be wired onwards into a collection input', async ({ page }) => {
+		await gotoApp(page)
+		await openChain(page, 2)
+		expect(await dragAdjustToGif(page)).toContain('port: frames')
+	})
+
+	/** Without a collection upstream the block runs once, and that connection stays wrong. */
+	test('an unmapped block still cannot', async ({ page }) => {
+		await gotoApp(page)
+		await openChain(page, 1)
+		expect(await dragAdjustToGif(page)).not.toContain('port: frames')
+	})
+
+	/** The upstream count is not fixed at load, so the downstream port has to follow it. */
+	test('the downstream port follows a change upstream', async ({ page }) => {
+		await gotoApp(page)
+		await openChain(page, 1)
+
+		const adjustOutputPort = page
+			.locator('.NodeShape', { hasText: 'Adjust Image' })
+			.locator('.NodeRow', { hasText: /^image/ })
+			.locator('.Port_start')
+
+		await expect(adjustOutputPort).toHaveAttribute('title', 'image')
+
+		await page.evaluate(async () => {
+			const w = window as any
+			const shape = w.editor
+				.getCurrentPageShapes()
+				.find((s: any) => s.type === 'node' && s.props.node?.toolId === 'image.generate')
+			w.editor.updateShape({
+				id: shape.id,
+				type: 'node',
+				props: { node: { ...shape.props.node, config: { ...shape.props.node.config, count: 3 } } },
+			})
+			await new Promise((r) => setTimeout(r, 400))
+		})
+
+		await expect(adjustOutputPort).toHaveAttribute('title', 'image[]')
+		await expect(adjustOutputPort).toHaveClass(/Port_collection/)
+	})
+})
+
+test.describe('headless runner', () => {
+	/**
+	 * The headless page is what `npm run workflow` drives, so testing it here keeps the command
+	 * line path honest without shelling out to a second process.
+	 */
+	async function runHeadless(page: Page, yaml: string) {
+		await page.goto('/headless.html')
+		await page.waitForFunction(() => (window as any).headlessReady === true)
+		return page.evaluate((yaml) => (window as any).runWorkflow(yaml), yaml)
+	}
+
+	test('runs a workflow with no editor present', async ({ page }) => {
+		// A real image path (generate -> collect -> GIF) rather than only text, because the point
+		// of using a browser headlessly is that the image tools still work.
+		await page.route('**/api/generate', async (route) => {
+			const png =
+				'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg=='
+			await route.fulfill({
+				status: 200,
+				contentType: 'application/json',
+				body: JSON.stringify({ imageUrls: [png] }),
+			})
+		})
+
+		const result = await runHeadless(
+			page,
+			[
+				'version: 1',
+				'steps:',
+				'  - id: prompt',
+				'    tool: const.text',
+				'    with: { value: a cat }',
+				'  - id: frame',
+				'    tool: image.generate',
+				'    needs:',
+				'      - port: prompt',
+				'        from: prompt.text',
+				'  - id: gather',
+				'    tool: frames.collect',
+				'    with: { count: 2 }',
+				'    needs:',
+				'      - port: item1',
+				'        from: frame.image',
+				'      - port: item2',
+				'        from: frame.image',
+				'  - id: gif',
+				'    tool: frames.gif',
+				'    needs:',
+				'      - port: frames',
+				'        from: gather.frames',
+			].join('\n')
+		)
+
+		expect(result.error).toBeUndefined()
+		expect(result.ok).toBe(true)
+		expect(result.nodes.gif.status).toBe('succeeded')
+		// Summarised rather than raw, because image bytes cannot cross back into Node.
+		expect(result.nodes.gif.outputs.gif).toContain('image/gif')
+	})
+
+	test('refuses a workflow that draws on the canvas, naming the step', async ({ page }) => {
+		const result = await runHeadless(
+			page,
+			['version: 1', 'steps:', '  - id: drawing', '    tool: canvas.sketch'].join('\n')
+		)
+
+		expect(result.ok).toBe(false)
+		expect(result.error).toContain('cannot run headlessly')
+		// Naming the step is the point: a bare capability failure would not say which block.
+		expect(result.error).toContain('drawing')
+		// The refusal must come before execution, not from a step failing midway.
+		expect(result.nodes).toEqual({})
+	})
+
+	test('reports a failing step instead of reporting success', async ({ page }) => {
+		await page.route('**/api/generate', async (route) => {
+			await route.fulfill({
+				status: 401,
+				contentType: 'application/json',
+				body: JSON.stringify({ error: 'token expired' }),
+			})
+		})
+
+		const result = await runHeadless(
+			page,
+			[
+				'version: 1',
+				'steps:',
+				'  - id: frame',
+				'    tool: image.generate',
+				'    with: { prompt: a cat }',
+			].join('\n')
+		)
+
+		expect(result.ok).toBe(false)
+		expect(result.nodes.frame.status).toBe('failed')
+	})
+})
+
+test.describe('generation cache', () => {
+	/**
+	 * The server decides what is cached; these assert the signal it depends on. An ordinary run
+	 * must not ask for new images, and Regenerate must, or "rerun if you are unhappy" would
+	 * quietly return the cached image it was meant to replace.
+	 */
+	async function openGenerateAndCaptureRequests(page: Page) {
+		const bodies: any[] = []
+		await page.route('**/api/generate', async (route, request) => {
+			bodies.push(request.postDataJSON())
+			const png =
+				'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg=='
+			await route.fulfill({
+				status: 200,
+				contentType: 'application/json',
+				body: JSON.stringify({ imageUrls: [png] }),
+			})
+		})
+
+		await page.goto('/')
+		await page.waitForFunction(() => (window as any).workflow !== undefined)
+		await page.evaluate(() => {
+			;(window as any).workflow.open(
+				[
+					'version: 1',
+					'steps:',
+					'  - id: gen',
+					'    tool: image.generate',
+					'    with: { prompt: a cat }',
+					'    ui: { x: 200, y: 200 }',
+				].join('\n'),
+				'cache test'
+			)
+		})
+		return bodies
+	}
+
+	test('an ordinary run reuses cached images', async ({ page }) => {
+		const bodies = await openGenerateAndCaptureRequests(page)
+
+		await page.getByRole('button', { name: 'Play from here' }).click()
+		await expect.poll(() => bodies.length).toBe(1)
+
+		expect(bodies[0].refresh).toBeUndefined()
+	})
+
+	test('Regenerate asks for new images', async ({ page }) => {
+		const bodies = await openGenerateAndCaptureRequests(page)
+
+		await page.getByTitle('More options').click()
+		await page.getByRole('menuitem', { name: 'Regenerate' }).click()
+		await expect.poll(() => bodies.length).toBe(1)
+
+		expect(bodies[0].refresh).toBe(true)
+	})
+
+	test('Regenerate is offered only where there is something to regenerate', async ({ page }) => {
+		await page.goto('/')
+		await page.waitForFunction(() => (window as any).workflow !== undefined)
+		await page.evaluate(() => {
+			;(window as any).workflow.open(
+				[
+					'version: 1',
+					'steps:',
+					'  - id: words',
+					'    tool: const.text',
+					'    with: { value: a cat }',
+					'    ui: { x: 200, y: 200 }',
+				].join('\n'),
+				'no generate'
+			)
+		})
+
+		await page.getByTitle('More options').click()
+		await expect(page.getByRole('menuitem', { name: 'Regenerate' })).toHaveCount(0)
+	})
+})

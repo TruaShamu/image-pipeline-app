@@ -10,6 +10,7 @@ export function createBuiltinToolRegistry(): ToolRegistry {
 export { parseLiquidVariables } from './liquidTemplate'
 export { runToolMapped } from './runToolMapped'
 export {
+	effectiveOutputType,
 	isImageValue,
 	isToolValue,
 	resolveToolInputs,

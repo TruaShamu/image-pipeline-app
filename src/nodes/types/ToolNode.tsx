@@ -16,14 +16,16 @@ import {
 	NODE_ROW_HEADER_GAP_PX,
 	NODE_ROW_HEIGHT_PX,
 	NODE_WIDTH_PX,
+	PortDataType,
 } from '../../constants'
 import { Port, ShapePort } from '../../ports/Port'
-import { resolveToolInputs, runToolMapped, ToolValue } from '../../tools'
+import { effectiveOutputType, resolveToolInputs, runToolMapped, ToolValue } from '../../tools'
 import { applyPromptPreset } from '../applyPromptPreset'
 import { capturePromptPreset } from '../capturePromptPreset'
 import { presetName, presetStatus } from '../presetStatus'
 import { useModelProblem, useModels } from '../../models/modelCatalog'
 import { getNodeInputPortValues } from '../nodePorts'
+import { nodeFansOut } from '../nodeFanOut'
 import { NodeShape } from '../NodeShapeUtil'
 import {
 	createToolNode,
@@ -257,9 +259,10 @@ export class ToolNodeDefinition extends NodeDefinition<ToolNode> {	static type =
 		return Math.max(1, rows) * NODE_ROW_HEIGHT_PX + previewHeight + regionHeight
 	}
 
-	getPorts(_shape: NodeShape, node: ToolNode): Record<string, ShapePort> {
+	getPorts(shape: NodeShape, node: ToolNode): Record<string, ShapePort> {
 		if (!registry.has(node.toolId)) return {}
 		const tool = registry.resolve(node.toolId)
+		const fansOut = nodeFansOut(this.editor, shape.id)
 		const inputPorts = resolveToolInputs(tool, node.config as Record<string, ToolValue>).filter(
 			(input) => input.port !== false
 		)
@@ -282,7 +285,14 @@ export class ToolNodeDefinition extends NodeDefinition<ToolNode> {	static type =
 					NODE_ROW_HEADER_GAP_PX +
 					NODE_ROW_HEIGHT_PX * (inputPorts.length + index + 0.5),
 				terminal: 'start',
-				dataType: output.type,
+				// Configuration can turn a single image into a set, and so can a collection arriving
+				// upstream. The port has to say so: what it may connect to depends on it.
+				dataType: effectiveOutputType(
+					tool,
+					output,
+					node.config as Record<string, ToolValue>,
+					fansOut
+				) as PortDataType,
 			}
 		})
 		return ports
@@ -328,14 +338,21 @@ export class ToolNodeDefinition extends NodeDefinition<ToolNode> {	static type =
 
 	getOutputInfo(shape: NodeShape, node: ToolNode, inputs: InfoValues): InfoValues {
 		if (!registry.has(node.toolId)) return {}
+		const tool = registry.resolve(node.toolId)
+		const fansOut = nodeFansOut(this.editor, shape.id)
 		const outputs = node.lastOutputs as Record<string, PipelineValue>
 		return Object.fromEntries(
-			registry.resolve(node.toolId).outputs.map((output) => [
+			tool.outputs.map((output) => [
 				output.name,
 				{
 					value: outputs[output.name] ?? null,
 					isOutOfDate: shape.props.isOutOfDate || areAnyInputsOutOfDate(inputs),
-					dataType: output.type,
+					dataType: effectiveOutputType(
+						tool,
+						output,
+						node.config as Record<string, ToolValue>,
+						fansOut
+					) as PortDataType,
 				},
 			])
 		)
@@ -351,6 +368,12 @@ function ToolNodeComponent({ shape, node }: NodeComponentProps<ToolNode>) {
 	const [confirmUpdate, setConfirmUpdate] = useState(false)
 	const [fileNames, setFileNames] = useState<Record<string, string>>({})
 	const inputs = useValue('tool inputs', () => getNodeInputPortValues(editor, shape.id), [
+		editor,
+		shape.id,
+	])
+	// Whether this block maps over a collection depends on what is upstream, so it has to be read
+	// reactively rather than taken from the block's own configuration.
+	const fansOut = useValue('tool fans out', () => nodeFansOut(editor, shape.id), [
 		editor,
 		shape.id,
 	])
@@ -453,19 +476,27 @@ function ToolNodeComponent({ shape, node }: NodeComponentProps<ToolNode>) {
 						</span>
 					</NodeRow>
 				))}
-			{tool.outputs.map((output) => (
-				<NodeRow key={output.name}>
-					<NodePortLabel dataType={output.type}>{output.name}</NodePortLabel>
-					<span className="NodeRow-connected-value">
-						{outputs[output.name] == null ? (
-							<NodePlaceholder />
-						) : (
-							<ToolPortValue value={outputs[output.name]} type={output.type} />
-						)}
-					</span>
-					<Port shapeId={shape.id} portId={output.name} />
-				</NodeRow>
-			))}
+			{tool.outputs.map((output) => {
+				const outputType = effectiveOutputType(
+					tool,
+					output,
+					config as Record<string, ToolValue>,
+					fansOut
+				) as PortDataType
+				return (
+					<NodeRow key={output.name}>
+						<NodePortLabel dataType={outputType}>{output.name}</NodePortLabel>
+						<span className="NodeRow-connected-value">
+							{outputs[output.name] == null ? (
+								<NodePlaceholder />
+							) : (
+								<ToolPortValue value={outputs[output.name]} type={outputType} />
+							)}
+						</span>
+						<Port shapeId={shape.id} portId={output.name} />
+					</NodeRow>
+				)
+			})}
 			{preview && (
 				<ToolImagePreview frames={previewFrames} isLoading={shape.props.isOutOfDate} />
 			)}

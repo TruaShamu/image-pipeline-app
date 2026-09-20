@@ -14,10 +14,18 @@ export interface GenerateParams {
 	outputFormat?: string
 	/** 0-100, ignored unless the output format is lossy. */
 	outputCompression?: number
+	/** How many images to ask for. Defaults to 1. */
+	n?: number
 }
 
 export interface GenerateResult {
-	imageUrl: string
+	/**
+	 * Every image the model returned, in the order it returned them.
+	 *
+	 * A list even for a single image, so that asking for more images cannot silently drop them:
+	 * this previously read `data[0]` and threw the rest away.
+	 */
+	imageUrls: string[]
 }
 
 export interface ImageProvider {

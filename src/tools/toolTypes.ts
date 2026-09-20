@@ -79,6 +79,13 @@ export interface ToolContext {
 	 * it: the same graph is meant to run headlessly, where there is no canvas to read.
 	 */
 	canvas?: CanvasCapability
+	/**
+	 * Generate fresh results instead of reusing cached ones.
+	 *
+	 * Set only by a deliberate "Regenerate" action or the CLI's `--fresh`. An ordinary run reuses
+	 * cached generations so that rerunning an unchanged pipeline is free and reproducible.
+	 */
+	refresh?: boolean
 }
 
 /**
@@ -128,6 +135,33 @@ export interface ToolManifest {
 	 * the result preview that would otherwise cover it.
 	 */
 	canvasRegion?: boolean
+	/**
+	 * Which of this tool's `image` outputs carry a collection for a given configuration.
+	 *
+	 * `image.generate` asked for several images produces an `image[]`, and the canvas and the
+	 * validator both have to know that before anything runs — a port is drawn, and a connection
+	 * accepted or refused, long before there is a value to inspect. Must be pure, for the same
+	 * reason `dynamicInputs` must be.
+	 */
+	collectionOutputs?: (config: Record<string, ToolValue>) => readonly string[]
+}
+
+/**
+ * The type an output actually carries, which is not always the type it declares.
+ *
+ * An `image` output becomes an `image[]` two ways: the step fans out, so the runner maps it over
+ * elements and collects the results, or the tool's configuration says this run produces several
+ * images. Ports, validation, and connection rules must all agree, so they all come here.
+ */
+export function effectiveOutputType(
+	tool: ToolManifest,
+	output: ToolOutputDefinition,
+	config: Record<string, ToolValue> | undefined,
+	fansOut: boolean
+): string {
+	if (output.type !== 'image') return output.type
+	if (fansOut) return 'image[]'
+	return tool.collectionOutputs?.(config ?? {}).includes(output.name) ? 'image[]' : 'image'
 }
 
 /**

@@ -13,9 +13,10 @@ export const executionState = new EditorAtom<ExecutionState>('execution state', 
 
 export async function startExecution(
 	editor: Editor,
-	startingNodeIds: Set<TLShapeId>
+	startingNodeIds: Set<TLShapeId>,
+	options: { refresh?: boolean } = {}
 ): Promise<CanvasExecution> {
-	const graph = new CanvasExecution(editor, startingNodeIds)
+	const graph = new CanvasExecution(editor, startingNodeIds, options.refresh ?? false)
 	executionState.update(editor, (state) => {
 		state.runningGraph?.stop()
 		return {

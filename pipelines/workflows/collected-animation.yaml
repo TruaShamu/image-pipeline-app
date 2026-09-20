@@ -1,0 +1,80 @@
+name: Collected animation
+description: Generate three separate images and gather them into one ordered collection to build a GIF.
+tags: [collection, gather, gif]
+version: 1
+steps:
+  # Three prompts rather than one prompt with a count: these are different subjects, not
+  # variations, so they cannot come from a single call.
+  - id: prompt-a
+    tool: const.text
+    with:
+      value: a closed flower bud, flat vector icon, plain white background
+    ui: { x: 80, y: 80 }
+  - id: prompt-b
+    tool: const.text
+    with:
+      value: a half-open flower, flat vector icon, plain white background
+    ui: { x: 80, y: 300 }
+  - id: prompt-c
+    tool: const.text
+    with:
+      value: a fully open flower, flat vector icon, plain white background
+    ui: { x: 80, y: 520 }
+  - id: frame-a
+    tool: image.generate
+    with:
+      model: openai:gpt-image-1.5
+      size: 1024x1024
+    needs:
+      - port: prompt
+        from: prompt-a.text
+    ui: { x: 400, y: 80 }
+  - id: frame-b
+    tool: image.generate
+    with:
+      model: openai:gpt-image-1.5
+      size: 1024x1024
+    needs:
+      - port: prompt
+        from: prompt-b.text
+    ui: { x: 400, y: 300 }
+  - id: frame-c
+    tool: image.generate
+    with:
+      model: openai:gpt-image-1.5
+      size: 1024x1024
+    needs:
+      - port: prompt
+        from: prompt-c.text
+    ui: { x: 400, y: 520 }
+  # The slot decides the frame order, not the order these bindings are listed in, so the flower
+  # opens rather than appearing in whatever order the connections were drawn.
+  - id: gather
+    tool: frames.collect
+    with:
+      count: 3
+    needs:
+      - port: item1
+        from: frame-a.image
+      - port: item2
+        from: frame-b.image
+      - port: item3
+        from: frame-c.image
+    ui: { x: 760, y: 260 }
+  - id: bloom
+    tool: frames.gif
+    with:
+      fps: 3
+      loop: forever
+    needs:
+      - port: frames
+        from: gather.frames
+    ui: { x: 1040, y: 260 }
+  - id: save-bloom
+    tool: image.download
+    with:
+      filename: bloom.gif
+    needs:
+      - port: image
+        from: bloom.gif
+    ui: { x: 1320, y: 260 }

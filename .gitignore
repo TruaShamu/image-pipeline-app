@@ -17,3 +17,6 @@ dist
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+
+# Images and GIFs written by `npm run workflow`. Disposable, like .cache.
+/workflow-output/

@@ -10,6 +10,7 @@
 		"build": "tsc && vite build",
 		"preview": "vite preview",
 		"token": "node scripts/refresh-token.mjs",
+		"workflow": "node scripts/workflow.mjs",
 		"test": "playwright test",
 		"test:headed": "playwright test --headed"
 	},
