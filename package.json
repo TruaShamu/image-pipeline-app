@@ -1,0 +1,38 @@
+{
+	"name": "image-pipeline-app",
+	"private": true,
+	"version": "0.0.0",
+	"description": "A local visual node-graph editor for Azure OpenAI image generation pipelines.",
+	"license": "UNLICENSED",
+	"type": "module",
+	"scripts": {
+		"dev": "vite --host",
+		"build": "tsc && vite build",
+		"preview": "vite preview",
+		"token": "node scripts/refresh-token.mjs",
+		"test": "playwright test",
+		"test:headed": "playwright test --headed"
+	},
+	"dependencies": {
+		"classnames": "^2.5.1",
+		"fflate": "0.8.2",
+		"gifenc": "^1.0.3",
+		"itty-router": "^5.0.18",
+		"liquidjs": "^10.21.1",
+		"radix-ui": "^1.4.2",
+		"react": "^19.2.1",
+		"react-dom": "^19.2.1",
+		"tldraw": "5.5.0-next.f9308d324e1c",
+		"yaml": "^2.7.1"
+	},
+	"devDependencies": {
+		"@playwright/test": "^1.63.0",
+		"@types/node": "24.13.4",
+		"@types/react": "^19.2.7",
+		"@types/react-dom": "^19.2.3",
+		"@vitejs/plugin-react": "^6.0.1",
+		"typescript": "^5.8.3",
+		"vite": "^8.0.16"
+	}
+}
+

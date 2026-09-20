@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 200">
+  <rect width="320" height="200" fill="#2b2d42"/>
+  <g stroke="#8d99ae" stroke-width="2">
+    <path d="M80 20v160M120 20v160M160 20v160M200 20v160M240 20v160"/>
+    <path d="M80 20h160M80 60h160M80 100h160M80 140h160M80 180h160"/>
+  </g>
+  <g fill="#ef8354">
+    <circle cx="100" cy="40" r="10"/><circle cx="140" cy="40" r="10"/>
+    <circle cx="180" cy="40" r="10"/><circle cx="220" cy="40" r="10"/>
+    <circle cx="100" cy="80" r="10"/><circle cx="140" cy="80" r="10"/>
+    <circle cx="180" cy="80" r="10"/><circle cx="220" cy="80" r="10"/>
+    <circle cx="100" cy="120" r="10"/><circle cx="140" cy="120" r="10"/>
+    <circle cx="180" cy="120" r="10"/><circle cx="220" cy="120" r="10"/>
+    <circle cx="100" cy="160" r="10"/><circle cx="140" cy="160" r="10"/>
+    <circle cx="180" cy="160" r="10"/><circle cx="220" cy="160" r="10"/>
+  </g>
+</svg>

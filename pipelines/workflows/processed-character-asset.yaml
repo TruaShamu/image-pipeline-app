@@ -1,0 +1,117 @@
+version: 1
+steps:
+  - id: image-removeBackground-1
+    tool: image.removeBackground
+    with:
+      tolerance: 24
+    ui:
+      x: 356
+      y: -422
+  - id: prompt-liquid-1
+    tool: prompt.liquid
+    with:
+      template: a {{ subject }} in the style of {{ style }}
+      preset: {}
+    ui:
+      x: 816
+      y: -405
+  - id: const-image-1
+    tool: const.image
+    ui:
+      x: 177
+      y: -127
+  - id: prompt-liquid-2
+    tool: prompt.liquid
+    with:
+      template: Full-body {{subject}}, {{style}} game character, centered, plain solid
+        background, no text
+      preset: {}
+    needs:
+      - port: style
+        from: const-text-4.text
+      - port: subject
+        from: const-text-2.text
+    ui:
+      x: 447
+      y: -100
+  - id: const-text-1
+    tool: const.text
+    with:
+      value: ""
+    ui:
+      x: 600
+      y: -74
+  - id: image-removeBackground-2
+    tool: image.removeBackground
+    with:
+      tolerance: 24
+    needs:
+      - port: source
+        from: image-generate-1.image
+    ui:
+      x: 806
+      y: -30
+  - id: const-text-2
+    tool: const.text
+    with:
+      value: space courier
+    ui:
+      x: 80
+      y: 100
+  - id: prompt-liquid-3
+    tool: prompt.liquid
+    with:
+      template: a {{ subject }} in the style of {{ style }}
+      preset: {}
+    ui:
+      x: 600
+      y: 114
+  - id: image-preview-1
+    tool: image.preview
+    needs:
+      - port: image
+        from: image-removeBackground-2.image
+    ui:
+      x: 1281
+      y: 166
+  - id: const-text-3
+    tool: const.text
+    with:
+      value: ""
+    ui:
+      x: 600
+      y: 180
+  - id: const-image-2
+    tool: const.image
+    ui:
+      x: 600
+      y: 180
+  - id: image-generate-1
+    tool: image.generate
+    with:
+      model: openai:gpt-image-1.5
+    needs:
+      - port: prompt
+        from: prompt-liquid-2.text
+    ui:
+      x: 725
+      y: 352
+  - id: image-download-1
+    tool: image.download
+    with:
+      filename: out.png
+    ui:
+      x: 600
+      y: 390
+  - id: const-text-4
+    tool: const.text
+    with:
+      value: pixel art
+    ui:
+      x: 70
+      y: 394
+  - id: const-image-3
+    tool: const.image
+    ui:
+      x: 410
+      y: 609

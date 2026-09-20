@@ -1,0 +1,8 @@
+name: Parallax Background
+template: "{{scene}}, layered 2D game background, clear foreground and horizon"
+image: /pipelines/prompts/images/parallax-background.svg
+tags: [background, parallax]
+vars:
+  - name: scene
+    type: text
+    required: true

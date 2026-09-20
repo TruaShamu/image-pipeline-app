@@ -1,0 +1,8 @@
+name: Sprite Sheet 4x4
+template: "{{subject}}, four by four animation sprite sheet, consistent framing"
+image: /pipelines/prompts/images/sprite-sheet-4x4.svg
+tags: [sprite, animation]
+vars:
+  - name: subject
+    type: text
+    required: true

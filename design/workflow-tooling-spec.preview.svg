@@ -1,0 +1,128 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1700" height="1700" viewBox="0 0 1700 1700"><defs><marker id="a" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#495057"/></marker></defs>
+<rect width="1700" height="1700" fill="#ffffff"/>
+<rect x="40" y="90" width="1620" height="80" rx="6" fill="#F3F2F1" stroke="#495057" stroke-width="2"/>
+<rect x="40" y="200" width="470" height="300" rx="6" fill="none" stroke="#107C10" stroke-width="1.5"/>
+<rect x="540" y="200" width="420" height="300" rx="6" fill="none" stroke="#0078D4" stroke-width="1.5"/>
+<rect x="990" y="200" width="670" height="300" rx="6" fill="none" stroke="#F7630C" stroke-width="1.5"/>
+<rect x="40" y="530" width="920" height="150" rx="6" fill="#F3F2F1" stroke="#495057" stroke-width="1.5"/>
+<rect x="990" y="530" width="670" height="150" rx="6" fill="none" stroke="#0c8599" stroke-width="1.5"/>
+<rect x="40" y="710" width="450" height="180" rx="6" fill="#F3F2F1" stroke="#495057" stroke-width="1.5"/>
+<rect x="510" y="710" width="450" height="180" rx="6" fill="none" stroke="#495057" stroke-width="1.5"/>
+<rect x="990" y="710" width="670" height="300" rx="6" fill="none" stroke="#107C10" stroke-width="1.5"/>
+<rect x="40" y="915" width="920" height="330" rx="6" fill="none" stroke="#0c8599" stroke-width="1.5"/>
+<rect x="40" y="1275" width="780" height="290" rx="6" fill="none" stroke="#F7630C" stroke-width="1.5"/>
+<rect x="840" y="1275" width="820" height="290" rx="6" fill="none" stroke="#107C10" stroke-width="1.5"/>
+<rect x="40" y="1590" width="1620" height="66" rx="6" fill="#F3F2F1" stroke="#495057" stroke-width="1.5"/>
+<line x1="538" y1="300" x2="514" y2="300" stroke="#495057" stroke-width="1.5" marker-end="url(#a)"/>
+<line x1="962" y1="1075" x2="986" y2="1000" stroke="#495057" stroke-width="1.5" marker-end="url(#a)"/>
+<text x="40" y="48" font-family="Segoe UI,sans-serif" font-size="28" fill="#000000" text-anchor="start">Workflow Lab  —  Prototype Spec  (Tool = code, Graph = YAML, Canvas executes)</text>
+<text x="850" y="135.25" font-family="Segoe UI,sans-serif" font-size="15" fill="#000000" text-anchor="middle">4 primitives:  TOOL = code(inputs,ctx)-&gt;outputs ·  REGISTRY = map of tools ·  GRAPH = typed DAG (in-memory) saved as YAML ·  RUNNER executes it.   Key split: REPRESENTATION (canvas/YAML, for viewing) is separate from STEPS (the actual actions that run).</text>
+<text x="60" y="231" font-family="Segoe UI,sans-serif" font-size="19" fill="#000000" text-anchor="start">TOOL  =  just code (a STEP)</text>
+<text x="60" y="262" font-family="Consolas,monospace" font-size="14" fill="#000000" text-anchor="start">{</text>
+<text x="60" y="280.9" font-family="Consolas,monospace" font-size="14" fill="#000000" text-anchor="start">  id: "image.generate"</text>
+<text x="60" y="299.8" font-family="Consolas,monospace" font-size="14" fill="#000000" text-anchor="start">  inputs: [{ name, type, required,</text>
+<text x="60" y="318.7" font-family="Consolas,monospace" font-size="14" fill="#000000" text-anchor="start">            default?, options?, port? }]</text>
+<text x="60" y="337.6" font-family="Consolas,monospace" font-size="14" fill="#000000" text-anchor="start">  outputs: [{ name, type }]   // [] for sinks</text>
+<text x="60" y="356.5" font-family="Consolas,monospace" font-size="14" fill="#000000" text-anchor="start">  run(inputs, ctx) -&gt; outputs</text>
+<text x="60" y="375.4" font-family="Consolas,monospace" font-size="14" fill="#000000" text-anchor="start">}</text>
+<text x="60" y="394.3" font-family="Consolas,monospace" font-size="14" fill="#000000" text-anchor="start">// ctx = { signal, log }</text>
+<text x="560" y="231" font-family="Segoe UI,sans-serif" font-size="19" fill="#000000" text-anchor="start">REGISTRY</text>
+<text x="560" y="262" font-family="Segoe UI,sans-serif" font-size="14" fill="#000000" text-anchor="start">Map&lt;id -&gt; Tool&gt;</text>
+<text x="560" y="280.9" font-family="Segoe UI,sans-serif" font-size="14" fill="#000000" text-anchor="start"></text>
+<text x="560" y="299.8" font-family="Segoe UI,sans-serif" font-size="14" fill="#000000" text-anchor="start">• register(tool)</text>
+<text x="560" y="318.7" font-family="Segoe UI,sans-serif" font-size="14" fill="#000000" text-anchor="start">• list()  (palette reads this)</text>
+<text x="560" y="337.6" font-family="Segoe UI,sans-serif" font-size="14" fill="#000000" text-anchor="start">• resolve(id)</text>
+<text x="560" y="356.5" font-family="Segoe UI,sans-serif" font-size="14" fill="#000000" text-anchor="start"></text>
+<text x="560" y="375.4" font-family="Segoe UI,sans-serif" font-size="14" fill="#000000" text-anchor="start">Add a tool = add a function.</text>
+<text x="560" y="394.3" font-family="Segoe UI,sans-serif" font-size="14" fill="#000000" text-anchor="start">No separate tool catalog.</text>
+<text x="1010" y="230" font-family="Segoe UI,sans-serif" font-size="18" fill="#000000" text-anchor="start">PIPELINE FILE = YAML  (REPRESENTATION)</text>
+<text x="1010" y="259" font-family="Consolas,monospace" font-size="13" fill="#000000" text-anchor="start">version: 1</text>
+<text x="1010" y="276.55" font-family="Consolas,monospace" font-size="13" fill="#000000" text-anchor="start">steps:</text>
+<text x="1010" y="294.1" font-family="Consolas,monospace" font-size="13" fill="#000000" text-anchor="start">  - id: prompt</text>
+<text x="1010" y="311.65" font-family="Consolas,monospace" font-size="13" fill="#000000" text-anchor="start">    tool: prompt.liquid</text>
+<text x="1010" y="329.2" font-family="Consolas,monospace" font-size="13" fill="#000000" text-anchor="start">    with: { template: "{{subject}} pixel art",</text>
+<text x="1010" y="346.75" font-family="Consolas,monospace" font-size="13" fill="#000000" text-anchor="start">            vars: { subject: knight } }</text>
+<text x="1010" y="364.3" font-family="Consolas,monospace" font-size="13" fill="#000000" text-anchor="start">    ui: { x: 340, y: 260 }          # runner ignores</text>
+<text x="1010" y="381.85" font-family="Consolas,monospace" font-size="13" fill="#000000" text-anchor="start">  - id: generate</text>
+<text x="1010" y="399.4" font-family="Consolas,monospace" font-size="13" fill="#000000" text-anchor="start">    tool: image.generate</text>
+<text x="1010" y="416.95000000000005" font-family="Consolas,monospace" font-size="13" fill="#000000" text-anchor="start">    with: { model: gpt-image-2, size: 1024x1024 }</text>
+<text x="1010" y="434.5" font-family="Consolas,monospace" font-size="13" fill="#000000" text-anchor="start">    needs: [{ port: prompt, from: prompt.text }]</text>
+<text x="60" y="559" font-family="Segoe UI,sans-serif" font-size="17" fill="#000000" text-anchor="start">REPRESENTATION  ≠  STEPS   (the core split)</text>
+<text x="60" y="589" font-family="Segoe UI,sans-serif" font-size="13" fill="#000000" text-anchor="start">REPRESENTATION = canvas nodes + YAML + ui:{x,y} + previews.  Exists for VIEWER EASE. Never executes.</text>
+<text x="60" y="606.55" font-family="Segoe UI,sans-serif" font-size="13" fill="#000000" text-anchor="start">STEPS = the tool.run() actions that actually happen (calls, slicing, downloads).  The runner only runs STEPS.</text>
+<text x="60" y="624.1" font-family="Segoe UI,sans-serif" font-size="13" fill="#000000" text-anchor="start">A SINK (preview/download) is a STEP with outputs:[] -- it consumes a value and surfaces it to the REPRESENTATION</text>
+<text x="60" y="641.65" font-family="Segoe UI,sans-serif" font-size="13" fill="#000000" text-anchor="start">layer (inspector/file). 'sink' is terminal-only: NOT a connectable value type, nothing wires out of it.</text>
+<text x="1010" y="558" font-family="Segoe UI,sans-serif" font-size="16" fill="#000000" text-anchor="start">ImageValue  (portable value on 'image' ports)</text>
+<text x="1010" y="587" font-family="Consolas,monospace" font-size="13" fill="#000000" text-anchor="start">type ImageValue = { bytes: Uint8Array, mimeType: string,</text>
+<text x="1010" y="604.55" font-family="Consolas,monospace" font-size="13" fill="#000000" text-anchor="start">                    width?: number, height?: number }</text>
+<text x="1010" y="622.1" font-family="Consolas,monospace" font-size="13" fill="#000000" text-anchor="start">Worker returns bytes. slice / preview / download all speak</text>
+<text x="1010" y="639.65" font-family="Consolas,monospace" font-size="13" fill="#000000" text-anchor="start">ImageValue -&gt; identical in browser + node.  NOT a URL/DOM node.</text>
+<text x="60" y="737" font-family="Segoe UI,sans-serif" font-size="15" fill="#000000" text-anchor="start">PORT TYPES</text>
+<text x="60" y="765" font-family="Segoe UI,sans-serif" font-size="13" fill="#000000" text-anchor="start">text | image | image[] | int | json</text>
+<text x="60" y="782.55" font-family="Segoe UI,sans-serif" font-size="13" fill="#000000" text-anchor="start">(sink = terminal, not wireable)</text>
+<text x="60" y="800.1" font-family="Segoe UI,sans-serif" font-size="13" fill="#000000" text-anchor="start"></text>
+<text x="60" y="817.65" font-family="Segoe UI,sans-serif" font-size="13" fill="#000000" text-anchor="start">Edge valid iff out.type == in.type.</text>
+<text x="60" y="835.2" font-family="Segoe UI,sans-serif" font-size="13" fill="#000000" text-anchor="start">image[] → image is a MISMATCH.</text>
+<text x="60" y="852.75" font-family="Segoe UI,sans-serif" font-size="13" fill="#000000" text-anchor="start">Literals: int strict (no coerce, &gt;0 where</text>
+<text x="60" y="870.3" font-family="Segoe UI,sans-serif" font-size="13" fill="#000000" text-anchor="start">required); json = object; options restrict.</text>
+<text x="530" y="737" font-family="Segoe UI,sans-serif" font-size="15" fill="#000000" text-anchor="start">validateGraph(graph, registry)</text>
+<text x="530" y="764" font-family="Segoe UI,sans-serif" font-size="12" fill="#000000" text-anchor="start">one check, canvas + loaded YAML:</text>
+<text x="530" y="780.2" font-family="Segoe UI,sans-serif" font-size="12" fill="#000000" text-anchor="start">cycles · dup ids · unknown tool/port ·</text>
+<text x="530" y="796.4" font-family="Segoe UI,sans-serif" font-size="12" fill="#000000" text-anchor="start">missing required input · dangling 'from' ·</text>
+<text x="530" y="812.6" font-family="Segoe UI,sans-serif" font-size="12" fill="#000000" text-anchor="start">input set by BOTH with+needs · &gt;1 binding</text>
+<text x="530" y="828.8" font-family="Segoe UI,sans-serif" font-size="12" fill="#000000" text-anchor="start">per input · bad literal type.</text>
+<text x="530" y="845" font-family="Segoe UI,sans-serif" font-size="12" fill="#000000" text-anchor="start">EDIT-TIME: edge type/cardinality only</text>
+<text x="530" y="861.2" font-family="Segoe UI,sans-serif" font-size="12" fill="#000000" text-anchor="start">(draft nodes w/ missing inputs allowed).</text>
+<text x="530" y="877.4" font-family="Segoe UI,sans-serif" font-size="12" fill="#000000" text-anchor="start">RUN-TIME: full readiness on the exec set.</text>
+<text x="1010" y="738" font-family="Segoe UI,sans-serif" font-size="16" fill="#000000" text-anchor="start">RETAINED OUTPUTS + FREEZE   (iterate without re-paying)</text>
+<text x="1010" y="769" font-family="Segoe UI,sans-serif" font-size="13" fill="#000000" text-anchor="start">No execution cache. BUT each node keeps its LAST run</text>
+<text x="1010" y="786.55" font-family="Segoe UI,sans-serif" font-size="13" fill="#000000" text-anchor="start">outputs in memory (a retained artifact, not a cache).</text>
+<text x="1010" y="804.1" font-family="Segoe UI,sans-serif" font-size="13" fill="#000000" text-anchor="start"></text>
+<text x="1010" y="821.65" font-family="Segoe UI,sans-serif" font-size="13" fill="#000000" text-anchor="start">• powers inspector preview + "Download this result"</text>
+<text x="1010" y="839.2" font-family="Segoe UI,sans-serif" font-size="13" fill="#000000" text-anchor="start">  (no re-run of paid ancestors)</text>
+<text x="1010" y="856.75" font-family="Segoe UI,sans-serif" font-size="13" fill="#000000" text-anchor="start">• FREEZE/PIN an output -&gt; downstream reads the frozen</text>
+<text x="1010" y="874.3" font-family="Segoe UI,sans-serif" font-size="13" fill="#000000" text-anchor="start">  ImageValue.  Mechanically: swap the upstream edge for</text>
+<text x="1010" y="891.85" font-family="Segoe UI,sans-serif" font-size="13" fill="#000000" text-anchor="start">  a const.image holding the retained value.</text>
+<text x="1010" y="909.4" font-family="Segoe UI,sans-serif" font-size="13" fill="#000000" text-anchor="start">  -&gt; change slice rows/cols and RE-SLICE the SAME sheet</text>
+<text x="1010" y="926.95" font-family="Segoe UI,sans-serif" font-size="13" fill="#000000" text-anchor="start">     instantly, zero paid calls.</text>
+<text x="1010" y="944.5" font-family="Segoe UI,sans-serif" font-size="13" fill="#000000" text-anchor="start">• editing a node marks its (+downstream) results STALE.</text>
+<text x="1010" y="962.05" font-family="Segoe UI,sans-serif" font-size="13" fill="#000000" text-anchor="start">Retaining an artifact ≠ caching/idempotency.</text>
+<text x="60" y="946" font-family="Segoe UI,sans-serif" font-size="19" fill="#000000" text-anchor="start">RUNNER  (pure orchestrator; canvas + CLI-later)</text>
+<text x="60" y="975" font-family="Segoe UI,sans-serif" font-size="13" fill="#000000" text-anchor="start">runGraph(graph, registry, { to?, signal, onNode }) -&gt; { nodes: { id: { status, outputs, error } } }</text>
+<text x="60" y="992.55" font-family="Segoe UI,sans-serif" font-size="13" fill="#000000" text-anchor="start"></text>
+<text x="60" y="1010.1" font-family="Segoe UI,sans-serif" font-size="13" fill="#000000" text-anchor="start">EXECUTION SET:  {to} -&gt; target + its ancestor closure (each shared ancestor once).  no {to} -&gt; all sinks + ancestors.</text>
+<text x="60" y="1027.65" font-family="Segoe UI,sans-serif" font-size="13" fill="#000000" text-anchor="start">ORDER: topo-sort, sequential.   'Run to here' re-runs the closure every time (unless an ancestor is FROZEN).</text>
+<text x="60" y="1045.2" font-family="Segoe UI,sans-serif" font-size="13" fill="#000000" text-anchor="start">FAILURE: a failed node -&gt; its descendants = 'blocked'; independent branches continue.  Draft/disconnected</text>
+<text x="60" y="1062.75" font-family="Segoe UI,sans-serif" font-size="13" fill="#000000" text-anchor="start">nodes NOT in the exec set don't block a valid branch.   default timeout + normalized errors in the runner.</text>
+<text x="60" y="1080.3" font-family="Segoe UI,sans-serif" font-size="13" fill="#000000" text-anchor="start"></text>
+<text x="60" y="1097.85" font-family="Segoe UI,sans-serif" font-size="13" fill="#000000" text-anchor="start">onNode event: { id, status: pending|running|succeeded|failed|blocked|cancelled, outputs?, error? }</text>
+<text x="60" y="1115.4" font-family="Segoe UI,sans-serif" font-size="13" fill="#000000" text-anchor="start">error = { kind: auth|timeout|network|tool|validation, message, httpStatus? }.  (auth kind covers worker token expiry.)</text>
+<text x="60" y="1132.95" font-family="Segoe UI,sans-serif" font-size="13" fill="#000000" text-anchor="start">canvas maps results onto nodes by id + output name (multi-output -&gt; inspector output selector).</text>
+<text x="60" y="1304" font-family="Segoe UI,sans-serif" font-size="17" fill="#000000" text-anchor="start">PROMPT PRESET CATALOG  (schema-complete snapshot)</text>
+<text x="60" y="1335" font-family="Consolas,monospace" font-size="13" fill="#000000" text-anchor="start">PromptPreset {</text>
+<text x="60" y="1352.55" font-family="Consolas,monospace" font-size="13" fill="#000000" text-anchor="start">  id, name, tags: string[], sampleImage?: url</text>
+<text x="60" y="1370.1" font-family="Consolas,monospace" font-size="13" fill="#000000" text-anchor="start">  template: string                       // liquid</text>
+<text x="60" y="1387.65" font-family="Consolas,monospace" font-size="13" fill="#000000" text-anchor="start">  vars: [{ name, type, required, default }]   // FULL schema</text>
+<text x="60" y="1405.2" font-family="Consolas,monospace" font-size="13" fill="#000000" text-anchor="start">}</text>
+<text x="60" y="1422.75" font-family="Consolas,monospace" font-size="13" fill="#000000" text-anchor="start">Select -&gt; snapshot BOTH template AND the vars schema into the node</text>
+<text x="60" y="1440.3" font-family="Consolas,monospace" font-size="13" fill="#000000" text-anchor="start">(not just values).  vars schema persists in YAML (with.varsSchema).</text>
+<text x="60" y="1457.85" font-family="Consolas,monospace" font-size="13" fill="#000000" text-anchor="start">Inspector renders typed editable fields from it; validate unresolved</text>
+<text x="60" y="1475.4" font-family="Consolas,monospace" font-size="13" fill="#000000" text-anchor="start">REQUIRED vars (after needs-resolution) before run.</text>
+<text x="60" y="1492.95" font-family="Consolas,monospace" font-size="13" fill="#000000" text-anchor="start">If a var input is wired, it overrides the literal.  Editing template</text>
+<text x="60" y="1510.5" font-family="Consolas,monospace" font-size="13" fill="#000000" text-anchor="start">re-derives var names; orphaned values dropped.</text>
+<text x="860" y="1304" font-family="Segoe UI,sans-serif" font-size="17" fill="#000000" text-anchor="start">TOOL CONTRACTS  (initial set)</text>
+<text x="860" y="1332" font-family="Consolas,monospace" font-size="12" fill="#000000" text-anchor="start">prompt.liquid           template:text*, vars:json          -&gt; text</text>
+<text x="860" y="1348.2" font-family="Consolas,monospace" font-size="12" fill="#000000" text-anchor="start">const.text              value:text*                        -&gt; text</text>
+<text x="860" y="1364.4" font-family="Consolas,monospace" font-size="12" fill="#000000" text-anchor="start">const.image             value:image*                       -&gt; image   (freeze target)</text>
+<text x="860" y="1380.6" font-family="Consolas,monospace" font-size="12" fill="#000000" text-anchor="start">image.generate          prompt:text*, model=gpt-image-2,    -&gt; image</text>
+<text x="860" y="1396.8" font-family="Consolas,monospace" font-size="12" fill="#000000" text-anchor="start">                        size=1024x1024, style=None</text>
+<text x="860" y="1413" font-family="Consolas,monospace" font-size="12" fill="#000000" text-anchor="start">image.removeBackground  image*                             -&gt; image</text>
+<text x="860" y="1429.2" font-family="Consolas,monospace" font-size="12" fill="#000000" text-anchor="start">sprite.slice            sheet:image*, rows:int=4, cols:int=4 -&gt; frames:image[]</text>
+<text x="860" y="1445.4" font-family="Consolas,monospace" font-size="12" fill="#000000" text-anchor="start">frames.preview          frames:image[]*                    -&gt; (sink)</text>
+<text x="860" y="1461.6" font-family="Consolas,monospace" font-size="12" fill="#000000" text-anchor="start">frames.downloadZip      frames:image[]*, filename=sprites.zip -&gt; (sink)</text>
+<text x="860" y="1477.8" font-family="Consolas,monospace" font-size="12" fill="#000000" text-anchor="start">image.preview           image*                             -&gt; (sink)</text>
+<text x="860" y="1494" font-family="Consolas,monospace" font-size="12" fill="#000000" text-anchor="start">image.download          image*, filename=out.png           -&gt; (sink)</text>
+<text x="860" y="1510.2" font-family="Consolas,monospace" font-size="12" fill="#000000" text-anchor="start">*=required · =default · sinks have outputs:[]</text>
+<text x="860" y="1615" font-family="Segoe UI,sans-serif" font-size="13" fill="#000000" text-anchor="middle">DEFERRED: versioning/immutability · caching/idempotency · adapters · secrets/auth per tool · durable backend · full eval (RunRecord later) · headless CLI · sink universal-preview.   CUT: shared registry/preset storage abstraction; pick IndexedDB OR OPFS.</text>
+<text x="508" y="280" font-family="Segoe UI,sans-serif" font-size="12" fill="#000000" text-anchor="middle">holds</text>
+<text x="966" y="1046" font-family="Segoe UI,sans-serif" font-size="11" fill="#000000" text-anchor="start">retains outputs</text></svg>

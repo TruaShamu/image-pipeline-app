@@ -1,0 +1,19 @@
+node_modules
+dist
+*.local
+.DS_Store
+
+# Secrets. Copy .env.example to .env and fill it in.
+.env
+
+# Generated images. Disposable — deleting this only forces regeneration.
+.cache
+
+# Leftover local state from the removed Cloudflare Worker / miniflare setup.
+.wrangler
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/

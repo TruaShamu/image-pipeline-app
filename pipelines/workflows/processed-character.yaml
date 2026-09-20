@@ -1,0 +1,46 @@
+name: Processed character asset
+description: Generate a character, remove its background, and preview the processed result.
+tags: [character, background removal]
+version: 1
+steps:
+  - id: subject
+    tool: const.text
+    with:
+      value: space courier
+    ui: { x: 80, y: 100 }
+  - id: style
+    tool: const.text
+    with:
+      value: pixel art
+    ui: { x: 80, y: 260 }
+  - id: prompt
+    tool: prompt.liquid
+    with:
+      template: "Full-body {{subject}}, {{style}} game character, centered, plain solid background, no text"
+    needs:
+      - port: subject
+        from: subject.text
+      - port: style
+        from: style.text
+    ui: { x: 340, y: 100 }
+  - id: generate
+    tool: image.generate
+    with:
+      model: openai:gpt-image-1.5
+    needs:
+      - port: prompt
+        from: prompt.text
+    ui: { x: 600, y: 100 }
+  - id: remove-background
+    tool: image.removeBackground
+    with: { tolerance: 24 }
+    needs:
+      - port: source
+        from: generate.image
+    ui: { x: 860, y: 100 }
+  - id: preview
+    tool: image.preview
+    needs:
+      - port: image
+        from: remove-background.image
+    ui: { x: 1120, y: 100 }

@@ -1,0 +1,46 @@
+name: Animated sprite sheet
+description: Generate a 4x4 sprite sheet, slice it into frames, and inspect the frame set.
+tags: [sprite, animation]
+version: 1
+steps:
+  - id: subject
+    tool: const.text
+    with:
+      value: small robot
+    ui: { x: 80, y: 100 }
+  - id: animation
+    tool: const.text
+    with:
+      value: walk cycle
+    ui: { x: 80, y: 260 }
+  - id: prompt
+    tool: prompt.liquid
+    with:
+      template: "4x4 sprite sheet of {{subject}} performing a {{animation}} animation, consistent character, equal cells, plain background, no gutters"
+    needs:
+      - port: subject
+        from: subject.text
+      - port: animation
+        from: animation.text
+    ui: { x: 340, y: 100 }
+  - id: generate-sheet
+    tool: image.generate
+    with:
+      model: openai:gpt-image-1.5
+    needs:
+      - port: prompt
+        from: prompt.text
+    ui: { x: 600, y: 100 }
+  - id: slice-frames
+    tool: sprite.slice
+    with: { rows: 4, cols: 4 }
+    needs:
+      - port: sheet
+        from: generate-sheet.image
+    ui: { x: 860, y: 100 }
+  - id: preview-frames
+    tool: frames.preview
+    needs:
+      - port: frames
+        from: slice-frames.frames
+    ui: { x: 1120, y: 100 }

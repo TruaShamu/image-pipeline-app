@@ -1,0 +1,173 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1860" height="1280" viewBox="0 0 1860 1280"><defs><marker id="a" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#495057"/></marker></defs>
+<rect width="1860" height="1280" fill="#ffffff"/>
+<rect x="40" y="66" width="1160" height="800" rx="6" fill="none" stroke="#1e1e1e" stroke-width="2"/>
+<rect x="40" y="66" width="1160" height="54" rx="6" fill="#F3F2F1" stroke="#1e1e1e" stroke-width="1.2"/>
+<rect x="880" y="74" width="96" height="38" rx="6" fill="#CFE4FA" stroke="#0078D4" stroke-width="1.2"/>
+<rect x="986" y="74" width="84" height="38" rx="6" fill="#F3F2F1" stroke="#1e1e1e" stroke-width="1.2"/>
+<rect x="1078" y="74" width="84" height="38" rx="6" fill="#F3F2F1" stroke="#1e1e1e" stroke-width="1.2"/>
+<rect x="1150" y="74" width="40" height="38" rx="6" fill="#F3F2F1" stroke="#1e1e1e" stroke-width="1.2"/>
+<rect x="40" y="120" width="250" height="746" rx="6" fill="none" stroke="#1e1e1e" stroke-width="1.2"/>
+<rect x="56" y="158" width="218" height="28" rx="6" fill="#F3F2F1" stroke="#1e1e1e" stroke-width="1.2"/>
+<rect x="56" y="214" width="218" height="28" rx="6" fill="#E8DAEF" stroke="#5C2D91" stroke-width="1.2"/>
+<rect x="56" y="246" width="218" height="28" rx="6" fill="#E8DAEF" stroke="#5C2D91" stroke-width="1.2"/>
+<rect x="56" y="302" width="218" height="28" rx="6" fill="#CFE4FA" stroke="#0078D4" stroke-width="1.2"/>
+<rect x="56" y="334" width="218" height="28" rx="6" fill="#CFE4FA" stroke="#0078D4" stroke-width="1.2"/>
+<rect x="56" y="366" width="218" height="28" rx="6" fill="#CFF5F5" stroke="#0c8599" stroke-width="1.2"/>
+<rect x="56" y="422" width="218" height="28" rx="6" fill="#DFF6DD" stroke="#2f9e44" stroke-width="1.2"/>
+<rect x="56" y="478" width="218" height="26" rx="6" fill="#F3F2F1" stroke="#1e1e1e" stroke-width="1.2"/>
+<rect x="56" y="506" width="218" height="26" rx="6" fill="#F3F2F1" stroke="#1e1e1e" stroke-width="1.2"/>
+<rect x="56" y="534" width="218" height="26" rx="6" fill="#F3F2F1" stroke="#1e1e1e" stroke-width="1.2"/>
+<rect x="56" y="562" width="218" height="26" rx="6" fill="#F3F2F1" stroke="#1e1e1e" stroke-width="1.2"/>
+<rect x="300" y="120" width="600" height="746" rx="6" fill="none" stroke="#1e1e1e" stroke-width="1.2"/>
+<rect x="340" y="250" width="150" height="74" rx="6" fill="#E8DAEF" stroke="#5C2D91" stroke-width="1.2"/>
+<rect x="560" y="250" width="150" height="74" rx="6" fill="#CFE4FA" stroke="#0078D4" stroke-width="1.2"/>
+<rect x="500" y="410" width="150" height="74" rx="6" fill="#DFF6DD" stroke="#2f9e44" stroke-width="1.2"/>
+<rect x="660" y="560" width="170" height="64" rx="6" fill="#F3F2F1" stroke="#1e1e1e" stroke-width="1.2"/>
+<line x1="490" y1="287" x2="560" y2="287" stroke="#1e1e1e" stroke-width="1.5" marker-end="url(#a)"/>
+<line x1="635" y1="324" x2="575" y2="410" stroke="#1e1e1e" stroke-width="1.5" marker-end="url(#a)"/>
+<line x1="650" y1="484" x2="700" y2="560" stroke="#1e1e1e" stroke-width="1.5" marker-end="url(#a)"/>
+<rect x="560" y="232" width="150" height="16" rx="6" fill="#CFF5F5" stroke="#0c8599" stroke-width="1.2"/>
+<line x1="490" y1="324" x2="505" y2="410" stroke="#D13438" stroke-width="2" marker-end="url(#a)"/>
+<rect x="340" y="660" width="500" height="40" rx="6" fill="#FDE7E9" stroke="#D13438" stroke-width="1.2"/>
+<rect x="910" y="120" width="290" height="746" rx="6" fill="none" stroke="#1e1e1e" stroke-width="1.2"/>
+<rect x="926" y="180" width="258" height="30" rx="6" fill="#CFF5F5" stroke="#0c8599" stroke-width="1.2"/>
+<rect x="926" y="214" width="258" height="28" rx="6" fill="#F3F2F1" stroke="#1e1e1e" stroke-width="1.2"/>
+<rect x="926" y="246" width="258" height="28" rx="6" fill="#F3F2F1" stroke="#1e1e1e" stroke-width="1.2"/>
+<rect x="926" y="302" width="258" height="26" rx="6" fill="#F3F2F1" stroke="#1e1e1e" stroke-width="1.2"/>
+<rect x="926" y="338" width="258" height="32" rx="6" fill="#CFE4FA" stroke="#0078D4" stroke-width="1.2"/>
+<rect x="926" y="374" width="258" height="30" rx="6" fill="#DFF6DD" stroke="#2f9e44" stroke-width="1.2"/>
+<rect x="926" y="408" width="258" height="30" rx="6" fill="#CFF5F5" stroke="#0c8599" stroke-width="1.2"/>
+<rect x="926" y="466" width="258" height="150" rx="6" fill="#F3F2F1" stroke="#1e1e1e" stroke-width="1.2"/>
+<rect x="1250" y="66" width="560" height="660" rx="6" fill="#ffffff" stroke="#1e1e1e" stroke-width="2"/>
+<rect x="1760" y="74" width="36" height="32" rx="6" fill="#F3F2F1" stroke="#1e1e1e" stroke-width="1.2"/>
+<rect x="1268" y="118" width="528" height="30" rx="6" fill="#F3F2F1" stroke="#1e1e1e" stroke-width="1.2"/>
+<rect x="1268" y="164" width="250" height="248" rx="6" fill="none" stroke="#1e1e1e" stroke-width="1.2"/>
+<rect x="1278" y="174" width="230" height="148" rx="6" fill="#F3F2F1" stroke="#1e1e1e" stroke-width="1.2"/>
+<rect x="1536" y="164" width="250" height="248" rx="6" fill="none" stroke="#1e1e1e" stroke-width="1.2"/>
+<rect x="1546" y="174" width="230" height="148" rx="6" fill="#F3F2F1" stroke="#1e1e1e" stroke-width="1.2"/>
+<rect x="1268" y="432" width="250" height="248" rx="6" fill="none" stroke="#1e1e1e" stroke-width="1.2"/>
+<rect x="1278" y="442" width="230" height="148" rx="6" fill="#F3F2F1" stroke="#1e1e1e" stroke-width="1.2"/>
+<rect x="1536" y="432" width="250" height="248" rx="6" fill="none" stroke="#1e1e1e" stroke-width="1.2"/>
+<rect x="1546" y="442" width="230" height="148" rx="6" fill="#F3F2F1" stroke="#1e1e1e" stroke-width="1.2"/>
+<rect x="40" y="938" width="240" height="74" rx="6" fill="#E8DAEF" stroke="#5C2D91" stroke-width="1.2"/>
+<rect x="40" y="1036" width="240" height="74" rx="6" fill="#F3F2F1" stroke="#1e1e1e" stroke-width="1.2"/>
+<rect x="380" y="972" width="330" height="104" rx="6" fill="#CFE4FA" stroke="#0078D4" stroke-width="1.2"/>
+<rect x="800" y="992" width="240" height="84" rx="6" fill="#DFF6DD" stroke="#2f9e44" stroke-width="1.2"/>
+<line x1="280" y1="975" x2="380" y2="1005" stroke="#1e1e1e" stroke-width="1.5" marker-end="url(#a)"/>
+<line x1="280" y1="1073" x2="380" y2="1043" stroke="#1e1e1e" stroke-width="1.5" marker-end="url(#a)"/>
+<line x1="710" y1="1024" x2="800" y2="1029" stroke="#1e1e1e" stroke-width="1.5" marker-end="url(#a)"/>
+<rect x="1080" y="938" width="730" height="300" rx="6" fill="#ffffff" stroke="#1e1e1e" stroke-width="2"/>
+<rect x="1096" y="952" width="420" height="30" rx="6" fill="#F3F2F1" stroke="#1e1e1e" stroke-width="1.2"/>
+<rect x="1660" y="950" width="136" height="34" rx="6" fill="#CFE4FA" stroke="#0078D4" stroke-width="1.2"/>
+<rect x="1096" y="996" width="700" height="62" rx="6" fill="none" stroke="#1e1e1e" stroke-width="1.2"/>
+<rect x="1108" y="1005" width="76" height="44" rx="6" fill="#F3F2F1" stroke="#1e1e1e" stroke-width="1.2"/>
+<rect x="1560" y="1011" width="90" height="32" rx="6" fill="#CFE4FA" stroke="#0078D4" stroke-width="1.2"/>
+<rect x="1660" y="1011" width="120" height="32" rx="6" fill="#FDE7E9" stroke="#D13438" stroke-width="1.2"/>
+<rect x="1096" y="1070" width="700" height="62" rx="6" fill="none" stroke="#1e1e1e" stroke-width="1.2"/>
+<rect x="1108" y="1079" width="76" height="44" rx="6" fill="#F3F2F1" stroke="#1e1e1e" stroke-width="1.2"/>
+<rect x="1560" y="1085" width="90" height="32" rx="6" fill="#CFE4FA" stroke="#0078D4" stroke-width="1.2"/>
+<rect x="1660" y="1085" width="120" height="32" rx="6" fill="#FDE7E9" stroke="#D13438" stroke-width="1.2"/>
+<rect x="1096" y="1144" width="700" height="62" rx="6" fill="none" stroke="#1e1e1e" stroke-width="1.2"/>
+<rect x="1108" y="1153" width="76" height="44" rx="6" fill="#F3F2F1" stroke="#1e1e1e" stroke-width="1.2"/>
+<rect x="1560" y="1159" width="90" height="32" rx="6" fill="#CFE4FA" stroke="#0078D4" stroke-width="1.2"/>
+<rect x="1660" y="1159" width="120" height="32" rx="6" fill="#FDE7E9" stroke="#D13438" stroke-width="1.2"/>
+<text x="40" y="50" font-family="Segoe UI,sans-serif" font-size="20" fill="#1e1e1e" text-anchor="start">①  Main Editor</text>
+<text x="58" y="98" font-family="Segoe UI,sans-serif" font-size="16" fill="#1e1e1e" text-anchor="start">Sprite pipeline  ▾</text>
+<text x="928" y="97.9" font-family="Segoe UI,sans-serif" font-size="14" fill="#1e1e1e" text-anchor="middle">▶ Run</text>
+<text x="1028" y="97.55" font-family="Segoe UI,sans-serif" font-size="13" fill="#1e1e1e" text-anchor="middle">Save</text>
+<text x="1120" y="97.55" font-family="Segoe UI,sans-serif" font-size="13" fill="#1e1e1e" text-anchor="middle">Load</text>
+<text x="1170" y="97.55" font-family="Segoe UI,sans-serif" font-size="13" fill="#1e1e1e" text-anchor="middle">＋</text>
+<text x="56" y="144" font-family="Segoe UI,sans-serif" font-size="12" fill="#1e1e1e" text-anchor="start">TOOL PALETTE  (from registry)</text>
+<text x="165" y="176.2" font-family="Segoe UI,sans-serif" font-size="12" fill="#1e1e1e" text-anchor="middle">search tools…</text>
+<text x="56" y="207" font-family="Consolas,monospace" font-size="11" fill="#1e1e1e" text-anchor="start">PROMPT</text>
+<text x="165" y="232.55" font-family="Segoe UI,sans-serif" font-size="13" fill="#1e1e1e" text-anchor="middle">prompt.liquid</text>
+<text x="165" y="264.55" font-family="Segoe UI,sans-serif" font-size="13" fill="#1e1e1e" text-anchor="middle">const.text</text>
+<text x="56" y="295" font-family="Consolas,monospace" font-size="11" fill="#1e1e1e" text-anchor="start">IMAGE</text>
+<text x="165" y="320.55" font-family="Segoe UI,sans-serif" font-size="13" fill="#1e1e1e" text-anchor="middle">image.generate</text>
+<text x="165" y="352.55" font-family="Segoe UI,sans-serif" font-size="13" fill="#1e1e1e" text-anchor="middle">image.removeBackground</text>
+<text x="165" y="384.55" font-family="Segoe UI,sans-serif" font-size="13" fill="#1e1e1e" text-anchor="middle">const.image  (freeze target)</text>
+<text x="56" y="415" font-family="Consolas,monospace" font-size="11" fill="#1e1e1e" text-anchor="start">SPRITE</text>
+<text x="165" y="440.55" font-family="Segoe UI,sans-serif" font-size="13" fill="#1e1e1e" text-anchor="middle">sprite.slice</text>
+<text x="56" y="471" font-family="Consolas,monospace" font-size="11" fill="#1e1e1e" text-anchor="start">OUTPUT (sinks)</text>
+<text x="165" y="495.55" font-family="Segoe UI,sans-serif" font-size="13" fill="#1e1e1e" text-anchor="middle">image.preview</text>
+<text x="165" y="523.55" font-family="Segoe UI,sans-serif" font-size="13" fill="#1e1e1e" text-anchor="middle">frames.preview</text>
+<text x="165" y="551.55" font-family="Segoe UI,sans-serif" font-size="13" fill="#1e1e1e" text-anchor="middle">image.download</text>
+<text x="165" y="579.55" font-family="Segoe UI,sans-serif" font-size="13" fill="#1e1e1e" text-anchor="middle">frames.downloadZip</text>
+<text x="56" y="618" font-family="Segoe UI,sans-serif" font-size="12" fill="#1e1e1e" text-anchor="start">drag a block onto the</text>
+<text x="56" y="634.2" font-family="Segoe UI,sans-serif" font-size="12" fill="#1e1e1e" text-anchor="start">canvas  →</text>
+<text x="316" y="144" font-family="Consolas,monospace" font-size="12" fill="#1e1e1e" text-anchor="start">CANVAS</text>
+<text x="415" y="283.09999999999997" font-family="Segoe UI,sans-serif" font-size="12" fill="#1e1e1e" text-anchor="middle">prompt</text>
+<text x="415" y="299.29999999999995" font-family="Segoe UI,sans-serif" font-size="12" fill="#1e1e1e" text-anchor="middle">(prompt.liquid)</text>
+<text x="635" y="283.09999999999997" font-family="Segoe UI,sans-serif" font-size="12" fill="#1e1e1e" text-anchor="middle">generate</text>
+<text x="635" y="299.29999999999995" font-family="Segoe UI,sans-serif" font-size="12" fill="#1e1e1e" text-anchor="middle">(image.generate)</text>
+<text x="575" y="443.09999999999997" font-family="Segoe UI,sans-serif" font-size="12" fill="#1e1e1e" text-anchor="middle">slice</text>
+<text x="575" y="459.29999999999995" font-family="Segoe UI,sans-serif" font-size="12" fill="#1e1e1e" text-anchor="middle">(sprite.slice)</text>
+<text x="745" y="596.2" font-family="Segoe UI,sans-serif" font-size="12" fill="#1e1e1e" text-anchor="middle">frames.preview</text>
+<text x="635" y="243.15" font-family="Segoe UI,sans-serif" font-size="9" fill="#1e1e1e" text-anchor="middle">❄ output frozen → slice</text>
+<text x="690" y="540" font-family="Consolas,monospace" font-size="10" fill="#1e1e1e" text-anchor="start">image[]→frames</text>
+<text x="590" y="684.2" font-family="Segoe UI,sans-serif" font-size="12" fill="#1e1e1e" text-anchor="middle">⚠ text → image: edge rejected (edit-time type check)</text>
+<text x="340" y="723" font-family="Segoe UI,sans-serif" font-size="11" fill="#1e1e1e" text-anchor="start">Frozen: slice reads generate's retained sheet -&gt; change rows/cols = re-slice</text>
+<text x="340" y="737.85" font-family="Segoe UI,sans-serif" font-size="11" fill="#1e1e1e" text-anchor="start">same sheet, no paid re-gen. Editing a node marks downstream results stale.</text>
+<text x="926" y="145" font-family="Segoe UI,sans-serif" font-size="13" fill="#1e1e1e" text-anchor="start">INSPECTOR — slice (sprite.slice)</text>
+<text x="926" y="175" font-family="Consolas,monospace" font-size="11" fill="#1e1e1e" text-anchor="start">inputs</text>
+<text x="1055" y="198.85" font-family="Segoe UI,sans-serif" font-size="11" fill="#1e1e1e" text-anchor="middle">sheet  ❄ frozen (generate)  ✕</text>
+<text x="1055" y="232.2" font-family="Segoe UI,sans-serif" font-size="12" fill="#1e1e1e" text-anchor="middle">rows:  5  (int)</text>
+<text x="1055" y="264.2" font-family="Segoe UI,sans-serif" font-size="12" fill="#1e1e1e" text-anchor="middle">cols:  5  (int)</text>
+<text x="926" y="297" font-family="Consolas,monospace" font-size="11" fill="#1e1e1e" text-anchor="start">outputs</text>
+<text x="1055" y="318.85" font-family="Segoe UI,sans-serif" font-size="11" fill="#1e1e1e" text-anchor="middle">frames : image[]  ▾ (selector)</text>
+<text x="1055" y="358.2" font-family="Segoe UI,sans-serif" font-size="12" fill="#1e1e1e" text-anchor="middle">▶ Run to here</text>
+<text x="1055" y="392.85" font-family="Segoe UI,sans-serif" font-size="11" fill="#1e1e1e" text-anchor="middle">⬇ Download this result (no re-run)</text>
+<text x="1055" y="426.85" font-family="Segoe UI,sans-serif" font-size="11" fill="#1e1e1e" text-anchor="middle">❄ Freeze output as input</text>
+<text x="926" y="459" font-family="Consolas,monospace" font-size="11" fill="#1e1e1e" text-anchor="start">result preview:</text>
+<text x="1055" y="545.2" font-family="Segoe UI,sans-serif" font-size="12" fill="#1e1e1e" text-anchor="middle">[ 5×5 sliced frames ]</text>
+<text x="926" y="637" font-family="Consolas,monospace" font-size="11" fill="#1e1e1e" text-anchor="start">status: succeeded · 12 frames</text>
+<text x="1250" y="44" font-family="Segoe UI,sans-serif" font-size="14" fill="#1e1e1e" text-anchor="start">②  Prompt Template Catalog</text>
+<text x="1268" y="98" font-family="Segoe UI,sans-serif" font-size="16" fill="#1e1e1e" text-anchor="start">Prompt Templates</text>
+<text x="1778" y="94.55" font-family="Segoe UI,sans-serif" font-size="13" fill="#1e1e1e" text-anchor="middle">✕</text>
+<text x="1532" y="137.2" font-family="Segoe UI,sans-serif" font-size="12" fill="#1e1e1e" text-anchor="middle">search  /  filter by tag</text>
+<text x="1393" y="252.2" font-family="Segoe UI,sans-serif" font-size="12" fill="#1e1e1e" text-anchor="middle">[ example output .png ]</text>
+<text x="1280" y="344" font-family="Segoe UI,sans-serif" font-size="14" fill="#1e1e1e" text-anchor="start">Pixel Art Hero</text>
+<text x="1280" y="371" font-family="Consolas,monospace" font-size="11" fill="#1e1e1e" text-anchor="start">#pixel #character</text>
+<text x="1661" y="252.2" font-family="Segoe UI,sans-serif" font-size="12" fill="#1e1e1e" text-anchor="middle">[ example output .png ]</text>
+<text x="1548" y="344" font-family="Segoe UI,sans-serif" font-size="14" fill="#1e1e1e" text-anchor="start">Cartoon Prop</text>
+<text x="1548" y="371" font-family="Consolas,monospace" font-size="11" fill="#1e1e1e" text-anchor="start">#cartoon #object</text>
+<text x="1393" y="520.2" font-family="Segoe UI,sans-serif" font-size="12" fill="#1e1e1e" text-anchor="middle">[ example output .png ]</text>
+<text x="1280" y="612" font-family="Segoe UI,sans-serif" font-size="14" fill="#1e1e1e" text-anchor="start">Parallax BG</text>
+<text x="1280" y="639" font-family="Consolas,monospace" font-size="11" fill="#1e1e1e" text-anchor="start">#background #scene</text>
+<text x="1661" y="520.2" font-family="Segoe UI,sans-serif" font-size="12" fill="#1e1e1e" text-anchor="middle">[ example output .png ]</text>
+<text x="1548" y="612" font-family="Segoe UI,sans-serif" font-size="14" fill="#1e1e1e" text-anchor="start">Sprite Sheet 4x4</text>
+<text x="1548" y="639" font-family="Consolas,monospace" font-size="11" fill="#1e1e1e" text-anchor="start">#sprite #animation</text>
+<text x="1268" y="705" font-family="Segoe UI,sans-serif" font-size="11" fill="#1e1e1e" text-anchor="start">Select → snapshots template + FULL vars schema into node (vars then typed-editable in inspector).</text>
+<text x="40" y="920" font-family="Segoe UI,sans-serif" font-size="20" fill="#1e1e1e" text-anchor="start">③  Runner is decoupled from the canvas</text>
+<text x="160" y="970.775" font-family="Segoe UI,sans-serif" font-size="13" fill="#1e1e1e" text-anchor="middle">Canvas UI</text>
+<text x="160" y="988.3249999999999" font-family="Segoe UI,sans-serif" font-size="13" fill="#1e1e1e" text-anchor="middle">(author + Run button)</text>
+<text x="160" y="1068.7749999999999" font-family="Segoe UI,sans-serif" font-size="13" fill="#1e1e1e" text-anchor="middle">CLI / headless</text>
+<text x="160" y="1086.3249999999998" font-family="Segoe UI,sans-serif" font-size="13" fill="#1e1e1e" text-anchor="middle">(load .yaml) — later</text>
+<text x="545" y="1011" font-family="Segoe UI,sans-serif" font-size="13" fill="#1e1e1e" text-anchor="middle">RUNNER (pure orchestrator)</text>
+<text x="545" y="1028.55" font-family="Segoe UI,sans-serif" font-size="13" fill="#1e1e1e" text-anchor="middle">runGraph(graph, registry,</text>
+<text x="545" y="1046.1" font-family="Segoe UI,sans-serif" font-size="13" fill="#1e1e1e" text-anchor="middle">  {to?, signal, onNode})</text>
+<text x="920" y="1022" font-family="Segoe UI,sans-serif" font-size="12" fill="#1e1e1e" text-anchor="middle">onNode { id, status,</text>
+<text x="920" y="1038.2" font-family="Segoe UI,sans-serif" font-size="12" fill="#1e1e1e" text-anchor="middle">outputs?, error{kind} }</text>
+<text x="920" y="1054.4" font-family="Segoe UI,sans-serif" font-size="12" fill="#1e1e1e" text-anchor="middle">+ final { nodes }</text>
+<text x="300" y="951" font-family="Consolas,monospace" font-size="11" fill="#1e1e1e" text-anchor="start">run(graph)</text>
+<text x="300" y="1091" font-family="Consolas,monospace" font-size="11" fill="#1e1e1e" text-anchor="start">parse YAML</text>
+<text x="720" y="1092" font-family="Segoe UI,sans-serif" font-size="10" fill="#1e1e1e" text-anchor="start">canvas maps results/status → nodes</text>
+<text x="1080" y="920" font-family="Segoe UI,sans-serif" font-size="20" fill="#1e1e1e" text-anchor="start">④  My Workflows  (save / load)</text>
+<text x="1306" y="971.2" font-family="Segoe UI,sans-serif" font-size="12" fill="#1e1e1e" text-anchor="middle">search workflows…</text>
+<text x="1728" y="971.55" font-family="Segoe UI,sans-serif" font-size="13" fill="#1e1e1e" text-anchor="middle">＋ Save as…</text>
+<text x="1146" y="1030.5" font-family="Segoe UI,sans-serif" font-size="10" fill="#1e1e1e" text-anchor="middle">[thumb]</text>
+<text x="1196" y="1021" font-family="Segoe UI,sans-serif" font-size="14" fill="#1e1e1e" text-anchor="start">sprite-hero-pixel</text>
+<text x="1196" y="1043" font-family="Consolas,monospace" font-size="11" fill="#1e1e1e" text-anchor="start">updated 2m ago</text>
+<text x="1605" y="1031.2" font-family="Segoe UI,sans-serif" font-size="12" fill="#1e1e1e" text-anchor="middle">Load</text>
+<text x="1720" y="1031.2" font-family="Segoe UI,sans-serif" font-size="12" fill="#1e1e1e" text-anchor="middle">Delete</text>
+<text x="1146" y="1104.5" font-family="Segoe UI,sans-serif" font-size="10" fill="#1e1e1e" text-anchor="middle">[thumb]</text>
+<text x="1196" y="1095" font-family="Segoe UI,sans-serif" font-size="14" fill="#1e1e1e" text-anchor="start">parallax-city-bg</text>
+<text x="1196" y="1117" font-family="Consolas,monospace" font-size="11" fill="#1e1e1e" text-anchor="start">updated 1h ago</text>
+<text x="1605" y="1105.2" font-family="Segoe UI,sans-serif" font-size="12" fill="#1e1e1e" text-anchor="middle">Load</text>
+<text x="1720" y="1105.2" font-family="Segoe UI,sans-serif" font-size="12" fill="#1e1e1e" text-anchor="middle">Delete</text>
+<text x="1146" y="1178.5" font-family="Segoe UI,sans-serif" font-size="10" fill="#1e1e1e" text-anchor="middle">[thumb]</text>
+<text x="1196" y="1169" font-family="Segoe UI,sans-serif" font-size="14" fill="#1e1e1e" text-anchor="start">cartoon-props-set</text>
+<text x="1196" y="1191" font-family="Consolas,monospace" font-size="11" fill="#1e1e1e" text-anchor="start">updated yesterday</text>
+<text x="1605" y="1179.2" font-family="Segoe UI,sans-serif" font-size="12" fill="#1e1e1e" text-anchor="middle">Load</text>
+<text x="1720" y="1179.2" font-family="Segoe UI,sans-serif" font-size="12" fill="#1e1e1e" text-anchor="middle">Delete</text>
+<text x="1096" y="1227" font-family="Segoe UI,sans-serif" font-size="11" fill="#1e1e1e" text-anchor="start">Storage: IndexedDB (YAML + thumbnail from designated sink/preview). Load guards unsaved edits.</text></svg>

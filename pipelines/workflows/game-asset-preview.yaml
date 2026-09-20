@@ -1,0 +1,48 @@
+version: 1
+steps:
+  - id: const-text-1
+    tool: const.text
+    with:
+      value: fantasy treasure chest
+    ui:
+      x: 80
+      y: 100
+  - id: prompt-liquid-1
+    tool: prompt.liquid
+    with:
+      template: "{{subject}}, {{style}} game asset, isolated composition, production
+        ready"
+      preset: {}
+    needs:
+      - port: subject
+        from: const-text-1.text
+      - port: style
+        from: const-text-2.text
+    ui:
+      x: 360
+      y: 100
+  - id: image-generate-1
+    tool: image.generate
+    with:
+      model: openai:gpt-image-1.5
+    needs:
+      - port: prompt
+        from: prompt-liquid-1.text
+    ui:
+      x: 640
+      y: 100
+  - id: image-preview-1
+    tool: image.preview
+    needs:
+      - port: image
+        from: image-generate-1.image
+    ui:
+      x: 920
+      y: 100
+  - id: const-text-2
+    tool: const.text
+    with:
+      value: cartoon
+    ui:
+      x: 80
+      y: 260

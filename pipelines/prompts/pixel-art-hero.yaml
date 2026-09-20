@@ -1,0 +1,8 @@
+name: Pixel Art Hero
+template: "{{subject}}, pixel art game character, readable silhouette, centered"
+image: /pipelines/prompts/images/pixel-art-hero.svg
+tags: [pixel, character, sprite]
+vars:
+  - name: subject
+    type: text
+    required: true

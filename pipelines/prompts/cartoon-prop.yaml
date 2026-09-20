@@ -1,0 +1,8 @@
+name: Cartoon Prop
+template: "{{subject}}, clean cartoon game prop, bold shape language, isolated"
+image: /pipelines/prompts/images/cartoon-prop.svg
+tags: [cartoon, object]
+vars:
+  - name: subject
+    type: text
+    required: true
